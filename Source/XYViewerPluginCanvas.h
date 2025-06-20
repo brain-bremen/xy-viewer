@@ -26,22 +26,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <VisualizerWindowHeaders.h>
 
-class VisualizerPlugin;
+class XYViewerPlugin;
 
 /**
 * 
 	Draws data in real time
 
 */
-class VisualizerPluginCanvas : public Visualizer
+class XYViewerPluginCanvas : public Visualizer
 {
 public:
 
 	/** Constructor */
-	VisualizerPluginCanvas(VisualizerPlugin* processor);
+	XYViewerPluginCanvas(XYViewerPlugin* processor);
 
 	/** Destructor */
-	~VisualizerPluginCanvas();
+	~XYViewerPluginCanvas();
 
 	/** Updates boundaries of sub-components whenever the canvas size changes */
 	void resized() override;
@@ -50,7 +50,7 @@ public:
 	void refreshState() override;
 
 	/** Updates settings */
-	void update() override;
+	//void update() override;
 
 	/** Called instead of "repaint()" to avoid re-painting sub-components*/
 	void refresh() override;
@@ -61,13 +61,13 @@ public:
 private:
 
 	/** Pointer to the processor class */
-	VisualizerPlugin* processor;
+	XYViewerPlugin* processor;
 
 	/** Class for plotting data */
 	InteractivePlot plt;
 
 	/** Generates an assertion if this class leaks */
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VisualizerPluginCanvas);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerPluginCanvas);
 };
 
 

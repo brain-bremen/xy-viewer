@@ -21,50 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "VisualizerPluginCanvas.h"
 
-#include "VisualizerPlugin.h"
+#include "XYViewerPlugin.h"
+
+#include "XYViewerPluginCanvas.h"
+#include "XYViewerPluginEditor.h"
 
 
-VisualizerPluginCanvas::VisualizerPluginCanvas(VisualizerPlugin* processor_)
-	: processor(processor_)
+XYViewerPluginEditor::XYViewerPluginEditor(GenericProcessor* p)
+    : VisualizerEditor(p, "Visualizer", 200)
 {
+
+    //addSelectedChannelsParameterEditor("Channels", 20, 105);
 
 }
 
-
-VisualizerPluginCanvas::~VisualizerPluginCanvas()
+Visualizer* XYViewerPluginEditor::createNewCanvas()
 {
-
-}
-
-
-void VisualizerPluginCanvas::resized()
-{
-
-}
-
-void VisualizerPluginCanvas::refreshState()
-{
-
-}
-
-
-void VisualizerPluginCanvas::update()
-{
-
-}
-
-
-void VisualizerPluginCanvas::refresh()
-{
-
-}
-
-
-void VisualizerPluginCanvas::paint(Graphics& g)
-{
-
-	g.fillAll(Colours::black);
-
+    return new XYViewerPluginCanvas((XYViewerPlugin*) getProcessor());;
 }

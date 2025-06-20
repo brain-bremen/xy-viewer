@@ -3,6 +3,7 @@
 
     This file is part of the Open Ephys GUI
     Copyright (C) 2022 Open Ephys
+    Copyright (C) 2025 Joscha Schmiedt <schmiedt@uni-bremen.de>
 
     ------------------------------------------------------------------
 
@@ -21,39 +22,39 @@
 
 */
 
-#include "VisualizerPlugin.h"
+#include "XYViewerPlugin.h"
 
-#include "VisualizerPluginEditor.h"
+#include "XYViewerPluginEditor.h"
 
 
-VisualizerPlugin::VisualizerPlugin() 
+XYViewerPlugin::XYViewerPlugin() 
     : GenericProcessor("Visualizer Plugin")
 {
 
 }
 
 
-VisualizerPlugin::~VisualizerPlugin()
+XYViewerPlugin::~XYViewerPlugin()
 {
 
 }
 
 
-AudioProcessorEditor* VisualizerPlugin::createEditor()
+AudioProcessorEditor* XYViewerPlugin::createEditor()
 {
-    editor = std::make_unique<VisualizerPluginEditor>(this);
+    editor = std::make_unique<XYViewerPluginEditor>(this);
     return editor.get();
 }
 
 
-void VisualizerPlugin::updateSettings()
+void XYViewerPlugin::updateSettings()
 {
 
 
 }
 
 
-void VisualizerPlugin::process(AudioBuffer<float>& buffer)
+void XYViewerPlugin::process(AudioBuffer<float>& buffer)
 {
 
     checkForEvents(true);
@@ -61,31 +62,31 @@ void VisualizerPlugin::process(AudioBuffer<float>& buffer)
 }
 
 
-void VisualizerPlugin::handleTTLEvent(TTLEventPtr event)
+void XYViewerPlugin::handleTTLEvent(TTLEventPtr event)
 {
 
 }
 
 
-void VisualizerPlugin::handleSpike(SpikePtr spike)
+void XYViewerPlugin::handleSpike(SpikePtr spike)
 {
 
 }
 
 
-void VisualizerPlugin::handleBroadcastMessage(String message)
+//void XYViewerPlugin::handleBroadcastMessage(String message)
+//{
+
+//}
+
+
+void XYViewerPlugin::saveCustomParametersToXml(XmlElement* parentElement)
 {
 
 }
 
 
-void VisualizerPlugin::saveCustomParametersToXml(XmlElement* parentElement)
-{
-
-}
-
-
-void VisualizerPlugin::loadCustomParametersFromXml(XmlElement* parentElement)
+void XYViewerPlugin::loadCustomParametersFromXml(XmlElement* parentElement)
 {
 
 }

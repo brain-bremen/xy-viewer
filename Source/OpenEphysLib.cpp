@@ -3,6 +3,8 @@
 
 This file is part of the Open Ephys GUI
 Copyright (C) 2016 Open Ephys
+Copyright (C) 2025 Joscha Schmiedt <schmiedt@uni-bremen.de>
+
 
 ------------------------------------------------------------------
 
@@ -22,7 +24,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <PluginInfo.h>
 
-#include "VisualizerPlugin.h" // update to point to your custom header file
+//#include "VisualizerPlugin.h" // update to point to your custom header file
+#include "XYViewerPlugin.h"
 
 #include <string>
 
@@ -43,7 +46,7 @@ extern "C" EXPORT void getLibInfo(Plugin::LibraryInfo* info)
 	Should not be changed to ensure it is always equal to the one used in the latest codebase.
 	The GUI refueses to load plugins with mismatched API versions */
 	info->apiVersion = PLUGIN_API_VER;
-	info->name = "VisualizerPlugin"; // Name of the plugin library
+	info->name = "XY Viewer"; // Name of the plugin library
 	info->libVersion = "0.1.0"; //Version of the plugin
 	info->numPlugins = NUM_PLUGINS;
 }
@@ -59,13 +62,13 @@ extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo* info)
 		info->type = Plugin::Type::PROCESSOR;
 
 		//Processor name
-		info->processor.name = "Visualizer Plugin"; // Processor name shown in the GUI
+		info->processor.name = "XY Viewer Plugin"; // Processor name shown in the GUI
 
 		//Type of processor. Visualizers are usually sinks, but they can also be SOURCE or FILTER processors.
 		info->processor.type = Processor::Type::SINK;
 
 		//Class factory pointer. Replace "ProcessorPluginSpace::ProcessorPlugin" with the namespace and class name.
-		info->processor.creator = &(Plugin::createProcessor<VisualizerPlugin>);
+		info->processor.creator = &(Plugin::createProcessor<XYViewerPlugin>);
 		break;
 
 	default:

@@ -3,6 +3,7 @@
 
 	This file is part of the Open Ephys GUI
 	Copyright (C) 2022 Open Ephys
+        Copyright (C) 2025 Joscha Schmiedt <schmiedt@uni-bremen.de>
 
 	------------------------------------------------------------------
 
@@ -33,14 +34,14 @@
 	or an extended settings interface.
 */
 
-class VisualizerPlugin : public GenericProcessor
+class XYViewerPlugin : public GenericProcessor
 {
 public:
 	/** The class constructor, used to initialize any members.*/
-	VisualizerPlugin();
+	XYViewerPlugin();
 
 	/** The class destructor, used to deallocate memory*/
-	~VisualizerPlugin();
+	~XYViewerPlugin();
 
 	/** If the processor has a custom editor, this method must be defined to instantiate it. */
 	AudioProcessorEditor* createEditor() override;
@@ -66,10 +67,6 @@ public:
 		the plugin's process() method */
 	void handleSpike(SpikePtr spike) override;
 
-	/** Handles broadcast messages sent during acquisition
-		Called automatically whenever a broadcast message is sent through the signal chain */
-	void handleBroadcastMessage(String message) override;
-
 	/** Saving custom settings to XML. This method is not needed to save the state of
 		Parameter objects */
 	void saveCustomParametersToXml(XmlElement* parentElement) override;
@@ -81,7 +78,7 @@ public:
 private:
 
 	/** Generates an assertion if this class leaks */
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VisualizerPlugin);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerPlugin);
 
 };
 
