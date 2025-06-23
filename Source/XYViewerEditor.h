@@ -27,7 +27,7 @@
 
 #include <VisualizerEditorHeaders.h>
 
-/** 
+/**
 	The editor for the VisualizerPlugin
 
 	Includes buttons for opening the canvas in a tab or window
@@ -35,7 +35,7 @@
 namespace XYViewerPlugin
 {
 
-	class XYViewerEditor : public VisualizerEditor
+	class XYViewerEditor : public VisualizerEditor, public ComboBox::Listener
 	{
 	public:
 
@@ -43,15 +43,24 @@ namespace XYViewerPlugin
 		XYViewerEditor(GenericProcessor* parentNode);
 
 		/** Destructor */
-		~XYViewerEditor() {}
+		~XYViewerEditor() override = default;
 
 		/** Creates the canvas */
-		Visualizer* createNewCanvas();
+		Visualizer* createNewCanvas() override;
+
+		void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+		void selectedStreamHasChanged() override;
 
 	private:
 
+		std::unique_ptr<ComboBox> xChannelList = nullptr;
+		std::unique_ptr<ComboBox> yChannelList = nullptr;
+
+
 		/** Generates an assertion if this class leaks */
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerEditor);
+
+
 	};
 
 

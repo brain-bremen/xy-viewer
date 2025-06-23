@@ -3,7 +3,7 @@
 
 	This file is part of the Open Ephys GUI
 	Copyright (C) 2022 Open Ephys
-        Copyright (C) 2025 Joscha Schmiedt <schmiedt@uni-bremen.de>
+		Copyright (C) 2025 Joscha Schmiedt <schmiedt@uni-bremen.de>
 
 	------------------------------------------------------------------
 
@@ -29,7 +29,7 @@
 #include <ProcessorHeaders.h>
 
 
-/** 
+/**
 	A plugin that includes a canvas for displaying incoming data
 	or an extended settings interface.
 */
@@ -77,11 +77,25 @@ namespace XYViewerPlugin
 			Parameter objects*/
 		void loadCustomParametersFromXml(XmlElement* parentElement) override;
 
+		Array<String> getChannelsForStream(uint16 streamdId) const;
+
 	private:
 
 		/** Generates an assertion if this class leaks */
 		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewer);
 
+		struct ContinuousChannelInfo
+		{
+			String name;
+			uint16 streamID = 0;
+			float sampleRate = 0.0f;
+			bool isActive = false;
+		};
+		std::vector<ContinuousChannelInfo> m_channels;
+		std::unordered_map<const ContinuousChannel*, ContinuousChannelInfo*> m_channelMap;
+
 	};
+
+
 }
 #endif // VISUALIZERPLUGIN_H_DEFINED
