@@ -1,9 +1,9 @@
 /*
 	------------------------------------------------------------------
 
-	This file is part of the Open Ephys GUI
+    This file is part of the XY Viewer Plugin for the Open Ephys GUI
 	Copyright (C) 2022 Open Ephys
-		Copyright (C) 2025 Joscha Schmiedt <schmiedt@uni-bremen.de>
+    Copyright (C) 2025 Joscha Schmiedt <schmiedt@uni-bremen.de>
 
 	------------------------------------------------------------------
 

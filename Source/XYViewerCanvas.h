@@ -1,23 +1,24 @@
 /*
-------------------------------------------------------------------
+    ------------------------------------------------------------------
 
-This file is part of a plugin for the Open Ephys GUI
-Copyright (C) 2022 Open Ephys
+    This file is part of the XY Viewer Plugin for the Open Ephys GUI
+    Copyright (C) 2022 Open Ephys
+    Copyright (C) 2025 Joscha Schmiedt <schmiedt@uni-bremen.de>
 
-------------------------------------------------------------------
+    ------------------------------------------------------------------
 
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
@@ -26,51 +27,49 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <VisualizerWindowHeaders.h>
 
+namespace XYViewerPlugin
+{
+class XYViewer;
 
-namespace XYViewerPlugin {
-	class XYViewer;
+/**
+*
+    Draws data in real time
 
-	/**
-	*
-		Draws data in real time
+*/
+class XYViewerCanvas : public Visualizer
+{
+  public:
+    /** Constructor */
+    XYViewerCanvas(XYViewer* processor);
 
-	*/
-	class XYViewerCanvas : public Visualizer
-	{
-	public:
+    /** Destructor */
+    ~XYViewerCanvas() override;
 
-		/** Constructor */
-		XYViewerCanvas(XYViewer* processor);
+    /** Updates boundaries of sub-components whenever the canvas size changes */
+    void resized() override;
 
-		/** Destructor */
-		~XYViewerCanvas() override;
+    /** Called when the visualizer's tab becomes visible again */
+    void refreshState() override;
 
-		/** Updates boundaries of sub-components whenever the canvas size changes */
-		void resized() override;
+    /** Updates settings */
+    // void update() override;
 
-		/** Called when the visualizer's tab becomes visible again */
-		void refreshState() override;
+    /** Called instead of "repaint()" to avoid re-painting sub-components*/
+    void refresh() override;
 
-		/** Updates settings */
-		//void update() override;
+    /** Draws the canvas background */
+    void paint(Graphics& g) override;
 
-		/** Called instead of "repaint()" to avoid re-painting sub-components*/
-		void refresh() override;
+  private:
+    /** Pointer to the processor class */
+    XYViewer* processor;
 
-		/** Draws the canvas background */
-		void paint(Graphics& g) override;
+    /** Class for plotting data */
+    InteractivePlot plt;
 
-	private:
+    /** Generates an assertion if this class leaks */
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerCanvas);
+};
 
-		/** Pointer to the processor class */
-		XYViewer* processor;
-
-		/** Class for plotting data */
-		InteractivePlot plt;
-
-		/** Generates an assertion if this class leaks */
-		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerCanvas);
-	};
-
-}
+} // namespace XYViewerPlugin
 #endif // SPECTRUMCANVAS_H_INCLUDED
