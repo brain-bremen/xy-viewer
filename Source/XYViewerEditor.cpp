@@ -40,6 +40,8 @@ XYViewerEditor::XYViewerEditor(GenericProcessor* p)
 	yChannelList->addListener(this);
 	yChannelList->setBounds(50, 70, 120, 20);
 	addAndMakeVisible(yChannelList.get());
+
+	addTextBoxParameterEditor(Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, 15, 75);
 }
 
 Visualizer* XYViewerEditor::createNewCanvas()
@@ -50,6 +52,15 @@ Visualizer* XYViewerEditor::createNewCanvas()
 void XYViewerEditor::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
 {
 
+	if (!comboBoxThatHasChanged) return;
+	if (comboBoxThatHasChanged == xChannelList.get() && comboBoxThatHasChanged->getNumItems() > 0)
+	{
+		XYViewer* xyViewerNode = dynamic_cast<XYViewer*>(getProcessor());
+		if (!xyViewerNode) return;
+
+		xyViewerNode->setActiveChannel(selectedStream, comboBoxThatHasChanged->getText());
+		//xyViewerNode->setActiveYChannel(selectedStream, comboBoxThatHasChanged->getText());
+	}
 }
 
 void XYViewerEditor::selectedStreamHasChanged()

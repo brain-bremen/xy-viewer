@@ -36,6 +36,11 @@
 namespace XYViewerPlugin
 {
 
+	struct ParameterNames
+	{
+		static constexpr auto keep_window_length = "keep_window_length";
+	};
+
 	class XYViewer : public GenericProcessor
 	{
 	public:
@@ -47,6 +52,8 @@ namespace XYViewerPlugin
 
 		/** If the processor has a custom editor, this method must be defined to instantiate it. */
 		AudioProcessorEditor* createEditor() override;
+
+
 
 		/** Called every time the settings of an upstream plugin are changed.
 			Allows the processor to handle variations in the channel configuration or any other parameter
@@ -78,6 +85,8 @@ namespace XYViewerPlugin
 		void loadCustomParametersFromXml(XmlElement* parentElement) override;
 
 		Array<String> getChannelsForStream(uint16 streamdId) const;
+		void parameterValueChanged(Parameter*) override;
+		void setActiveChannel(uint16 streamId, String name);
 
 	private:
 

@@ -32,6 +32,9 @@ XYViewer::XYViewer()
 	: GenericProcessor("XY Viewer")
 {
 	m_channels.reserve(384);
+	addIntParameter(Parameter::PROCESSOR_SCOPE,ParameterNames::keep_window_length, "Window Length (ms)",
+		"Duration of trace to keep in ms", 2000, 100, 60000);
+
 }
 
 
@@ -109,4 +112,31 @@ Array<String> XYViewer::getChannelsForStream(uint16 streamdId) const
 	}
 
 	return channelsForStream;
+}
+
+void XYViewer::parameterValueChanged(Parameter* parameter)
+{
+	GenericProcessor::parameterValueChanged(parameter);
+	if (parameter->getName().equalsIgnoreCase(ParameterNames::keep_window_length))
+	{
+		int keep_window_length = static_cast<int>(parameter->getValue());
+	}
+
+
+}
+
+void XYViewer::setActiveChannel(uint16 streamId, String name)
+{
+	for (auto& channel: m_channels)
+{
+		if (channel.name.equalsIgnoreCase(name) && channel.streamID == streamId)
+		{
+			channel.isActive = true;
+		}
+
+		else
+		{
+			channel.isActive = false;
+		}
+}
 }
