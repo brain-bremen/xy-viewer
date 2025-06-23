@@ -27,67 +27,71 @@
 #include "XYViewerCanvas.h"
 using namespace XYViewerPlugin;
 
-XYViewerEditor::XYViewerEditor(GenericProcessor* p)
-    : VisualizerEditor(p, "XY Viewer", 210)
+XYViewerEditor::XYViewerEditor (GenericProcessor* p)
+    : VisualizerEditor (p, "XY Viewer", 210)
 {
-    xChannelList = std::make_unique<ComboBox>("X Channel List");
-    xChannelList->addListener(this);
-    xChannelList->setBounds(50, 40, 120, 20);
-    addAndMakeVisible(xChannelList.get());
+    xChannelList = std::make_unique<ComboBox> ("X Channel List");
+    xChannelList->addListener (this);
+    xChannelList->setBounds (50, 40, 120, 20);
+    addAndMakeVisible (xChannelList.get());
 
-    yChannelList = std::make_unique<ComboBox>("Y Channel List");
-    yChannelList->addListener(this);
-    yChannelList->setBounds(50, 70, 120, 20);
-    addAndMakeVisible(yChannelList.get());
+    yChannelList = std::make_unique<ComboBox> ("Y Channel List");
+    yChannelList->addListener (this);
+    yChannelList->setBounds (50, 70, 120, 20);
+    addAndMakeVisible (yChannelList.get());
 
-    addTextBoxParameterEditor(Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, 50,
-                              95);
+    addTextBoxParameterEditor (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, 50, 95);
 }
 
 Visualizer* XYViewerEditor::createNewCanvas()
 {
-    XYViewer* xyViewerNode = dynamic_cast<XYViewer*>(getProcessor());
-    if (!xyViewerNode) return nullptr;
+    XYViewer* xyViewerNode = dynamic_cast<XYViewer*> (getProcessor());
+    if (! xyViewerNode)
+        return nullptr;
 
-    XYViewerCanvas* xyViewerCanvas = new XYViewerCanvas(xyViewerNode);
-    xyViewerNode->setCanvas(xyViewerCanvas);
+    XYViewerCanvas* xyViewerCanvas = new XYViewerCanvas (xyViewerNode);
+    xyViewerNode->setCanvas (xyViewerCanvas);
 
-    xyViewerCanvas->setRetentionPeriodMs(
-        xyViewerNode->getParameter(ParameterNames::keep_window_length)->getValue());
-    xyViewerNode->setActiveChannel(selectedStream, xChannelList->getText());
+    xyViewerCanvas->setRetentionPeriodMs (
+        xyViewerNode->getParameter (ParameterNames::keep_window_length)->getValue());
+    xyViewerNode->setActiveChannel (selectedStream, xChannelList->getText());
 
     return xyViewerCanvas;
 }
 
-void XYViewerEditor::comboBoxChanged(ComboBox* comboBoxThatHasChanged)
+void XYViewerEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 {
-    if (!comboBoxThatHasChanged) return;
+    if (! comboBoxThatHasChanged)
+        return;
     if (comboBoxThatHasChanged == xChannelList.get() && comboBoxThatHasChanged->getNumItems() > 0)
     {
-        XYViewer* xyViewerNode = dynamic_cast<XYViewer*>(getProcessor());
-        if (!xyViewerNode) return;
+        XYViewer* xyViewerNode = dynamic_cast<XYViewer*> (getProcessor());
+        if (! xyViewerNode)
+            return;
 
-        xyViewerNode->setActiveChannel(selectedStream, comboBoxThatHasChanged->getText());
+        xyViewerNode->setActiveChannel (selectedStream, comboBoxThatHasChanged->getText());
         // xyViewerNode->setActiveYChannel(selectedStream, comboBoxThatHasChanged->getText());
     }
 }
 
 void XYViewerEditor::selectedStreamHasChanged()
 {
-    XYViewer* xyViewerNode = dynamic_cast<XYViewer*>(getProcessor());
-    if (xyViewerNode == nullptr) return;
-    if (selectedStream == 0) return;
+    XYViewer* xyViewerNode = dynamic_cast<XYViewer*> (getProcessor());
+    if (xyViewerNode == nullptr)
+        return;
+    if (selectedStream == 0)
+        return;
 
     xChannelList->clear();
     yChannelList->clear();
 
-    Array<String> currentChannels = xyViewerNode->getChannelsForStream(selectedStream);
+    Array<String> currentChannels = xyViewerNode->getChannelsForStream (selectedStream);
     int id = 0;
     for (const auto& channel : currentChannels)
     {
-        xChannelList->addItem(channel, ++id);
-        yChannelList->addItem(channel, ++id);
+        xChannelList->addItem (channel, ++id);
+        yChannelList->addItem (channel, ++id);
     }
-    xChannelList->setSelectedId(1, sendNotification);
-    yChannelList->setSelectedId(2, sendNotification);
+    xChannelList->setSelectedId (1, sendNotification);
+    yChannelList->setSelectedId (2, sendNotification);
 }

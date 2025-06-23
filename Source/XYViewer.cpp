@@ -29,18 +29,17 @@
 using namespace XYViewerPlugin;
 
 XYViewer::XYViewer()
-    : GenericProcessor("XY Viewer")
+    : GenericProcessor ("XY Viewer")
 {
-    m_channels.reserve(384);
-    addIntParameter(Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length,
-                    "Retention Period (ms)", "Duration of trace to keep in ms", 2000, 100, 60000);
+    m_channels.reserve (384);
+    addIntParameter (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, "Retention Period (ms)", "Duration of trace to keep in ms", 2000, 100, 60000);
 }
 
 XYViewer::~XYViewer() {}
 
 AudioProcessorEditor* XYViewer::createEditor()
 {
-    editor = std::make_unique<XYViewerEditor>(this);
+    editor = std::make_unique<XYViewerEditor> (this);
     return editor.get();
 }
 
@@ -49,26 +48,25 @@ void XYViewer::updateSettings()
     m_channels.clear();
     for (ContinuousChannel* contChan : continuousChannels)
     {
-        m_channels.emplace_back(contChan->getName(), contChan->getStreamId(),
-                                contChan->getSampleRate());
+        m_channels.emplace_back (contChan->getName(), contChan->getStreamId(), contChan->getSampleRate());
     }
 
     if (m_canvas)
     {
-        parameterValueChanged(getParameter(ParameterNames::keep_window_length));
+        parameterValueChanged (getParameter (ParameterNames::keep_window_length));
     }
 }
 
-void XYViewer::process(AudioBuffer<float>& buffer)
+void XYViewer::process (AudioBuffer<float>& buffer)
 {
-    checkForEvents(true);
+    checkForEvents (true);
     for (int chan = 0; chan < buffer.getNumChannels(); ++chan)
     {
         const uint16 streamId = continuousChannels[chan]->getStreamId();
 
-        const uint32 nSamples = getNumSamplesInBlock(streamId);
+        const uint32 nSamples = getNumSamplesInBlock (streamId);
 
-        String streamKey = getDataStream(streamId)->getKey();
+        String streamKey = getDataStream (streamId)->getKey();
 
         // displayBufferMap[streamId]->addData (buffer, chan, nSamples);
     }
@@ -76,8 +74,9 @@ void XYViewer::process(AudioBuffer<float>& buffer)
 
 bool XYViewer::startAcquisition()
 {
-    XYViewerEditor* editor_ = dynamic_cast<XYViewerEditor*>(getEditor());
-    if (!editor_) return false;
+    XYViewerEditor* editor_ = dynamic_cast<XYViewerEditor*> (getEditor());
+    if (! editor_)
+        return false;
     editor_->enable();
 
     return true;
@@ -85,60 +84,62 @@ bool XYViewer::startAcquisition()
 
 bool XYViewer::stopAcquisition()
 {
-    XYViewerEditor* editor_ = dynamic_cast<XYViewerEditor*>(getEditor());
-    if (!editor_) return false;
+    XYViewerEditor* editor_ = dynamic_cast<XYViewerEditor*> (getEditor());
+    if (! editor_)
+        return false;
     editor_->disable();
 
     return true;
 }
 
-void XYViewer::handleTTLEvent(TTLEventPtr event) {}
+void XYViewer::handleTTLEvent (TTLEventPtr event) {}
 
-void XYViewer::handleSpike(SpikePtr spike) {}
+void XYViewer::handleSpike (SpikePtr spike) {}
 
 // void XYViewerPlugin::handleBroadcastMessage(String message)
 //{
 
 //}
 
-void XYViewer::saveCustomParametersToXml(XmlElement* parentElement) {}
+void XYViewer::saveCustomParametersToXml (XmlElement* parentElement) {}
 
-void XYViewer::loadCustomParametersFromXml(XmlElement* parentElement) {}
+void XYViewer::loadCustomParametersFromXml (XmlElement* parentElement) {}
 
-Array<String> XYViewer::getChannelsForStream(uint16 streamdId) const
+Array<String> XYViewer::getChannelsForStream (uint16 streamdId) const
 {
     Array<String> channelsForStream;
     for (const auto& channel : m_channels)
     {
         if (channel.streamID == streamdId)
         {
-            channelsForStream.add(channel.name);
+            channelsForStream.add (channel.name);
         }
     }
 
     return channelsForStream;
 }
 
-void XYViewer::parameterValueChanged(Parameter* parameter)
+void XYViewer::parameterValueChanged (Parameter* parameter)
 {
-    GenericProcessor::parameterValueChanged(parameter);
-    if (parameter->getName().equalsIgnoreCase(ParameterNames::keep_window_length))
+    GenericProcessor::parameterValueChanged (parameter);
+    if (parameter->getName().equalsIgnoreCase (ParameterNames::keep_window_length))
     {
-        int keep_window_length = static_cast<int>(parameter->getValue());
-        if (m_canvas) m_canvas->setRetentionPeriodMs(keep_window_length);
+        int keep_window_length = static_cast<int> (parameter->getValue());
+        if (m_canvas)
+            m_canvas->setRetentionPeriodMs (keep_window_length);
     }
 }
 
-void XYViewer::setActiveChannel(uint16 streamId, String name)
+void XYViewer::setActiveChannel (uint16 streamId, String name)
 {
     for (auto& channel : m_channels)
     {
-        if (channel.name.equalsIgnoreCase(name) && channel.streamID == streamId)
+        if (channel.name.equalsIgnoreCase (name) && channel.streamID == streamId)
         {
             channel.isActive = true;
             if (m_canvas)
             {
-                m_canvas->setPlotTitle(channel.name);
+                m_canvas->setPlotTitle (channel.name);
             }
         }
 

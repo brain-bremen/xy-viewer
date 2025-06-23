@@ -28,21 +28,21 @@
 #include <random>
 using namespace XYViewerPlugin;
 
-XYViewerCanvas::XYViewerCanvas(XYViewer* processor_)
-    : m_processor(processor_)
+XYViewerCanvas::XYViewerCanvas (XYViewer* processor_)
+    : m_processor (processor_)
 {
-    m_plt.xlabel("X");
-    m_plt.ylabel("Y");
-    m_plt.title("X vs Y");
-    m_plt.setInteractive(InteractivePlotMode::ON);
-    m_plt.setBackgroundColour(Colours::darkolivegreen);
-    addAndMakeVisible(&m_plt);
+    m_plt.xlabel ("X");
+    m_plt.ylabel ("Y");
+    m_plt.title ("X vs Y");
+    m_plt.setInteractive (InteractivePlotMode::ON);
+    m_plt.setBackgroundColour (Colours::darkolivegreen);
+    addAndMakeVisible (&m_plt);
     // m_plt.setBounds(1, 1, 640, 480);
     //m_plt.setBounds(50, 40, 120, 20);
-    m_plt.setBounds(50, 50, 800, 500);
-    m_range = XYRange{ -5.0f, 5.0, -5.0f, 5.0f };
-    m_plt.showGrid(true);
-    m_plt.setRange(m_range);
+    m_plt.setBounds (50, 50, 800, 500);
+    m_range = XYRange { -5.0f, 5.0, -5.0f, 5.0f };
+    m_plt.showGrid (true);
+    m_plt.setRange (m_range);
 }
 
 XYViewerCanvas::~XYViewerCanvas() {}
@@ -64,22 +64,20 @@ void XYViewerCanvas::refresh()
     // WIP: Draw random points for now
     int nPoints = 100; // or use a member variable if defined elsewhere
     std::random_device rd;
-    std::mt19937 gen(rd());
-    std::uniform_real_distribution<float> dist(0.0f, 1.0f);
+    std::mt19937 gen (rd());
+    std::uniform_real_distribution<float> dist (0.0f, 1.0f);
 
     for (int i = 0; i < nPoints; ++i)
     {
-        x.push_back(dist(gen)+i);
-        y.push_back(dist(gen)+i);
+        x.push_back (dist (gen) + i);
+        y.push_back (dist (gen) + i);
     }
 
     m_plt.clear();
-    m_plt.plot(x, y, Colours::black, 2.0, 0.8f, PlotType::LINE);
-    
-
+    m_plt.plot (x, y, Colours::black, 2.0, 0.8f, PlotType::LINE);
 }
 
-void XYViewerCanvas::paint(Graphics& g)
+void XYViewerCanvas::paint (Graphics& g)
 {
-    g.fillAll(Colours::black);
+    g.fillAll (Colours::black);
 }

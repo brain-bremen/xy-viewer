@@ -32,13 +32,13 @@ namespace XYViewerPlugin
 class XYViewer;
 
 class XYFadingTracePlot : public InteractivePlot
-{ 
+{
 };
 
 class XYViewerCanvas : public Visualizer
 {
-  public:
-    XYViewerCanvas(XYViewer* processor);
+public:
+    XYViewerCanvas (XYViewer* processor);
     ~XYViewerCanvas() override;
 
     /** Updates boundaries of sub-components whenever the canvas size changes */
@@ -54,12 +54,12 @@ class XYViewerCanvas : public Visualizer
     void refresh() override;
 
     /** Draws the canvas background */
-    void paint(Graphics& g) override;
+    void paint (Graphics& g) override;
 
-    void setRetentionPeriodMs(int retentionPeriod) { m_retention_period_ms = retentionPeriod; }
-    void setPlotTitle(const String& title) { m_plt.setTitle(title); }
+    void setRetentionPeriodMs (int retentionPeriod) { m_retention_period_ms = retentionPeriod; }
+    void setPlotTitle (const String& title) { m_plt.setTitle (title); }
 
-  private:
+private:
     /** Pointer to the processor class */
     XYViewer* m_processor;
 
@@ -70,7 +70,7 @@ class XYViewerCanvas : public Visualizer
     XYRange m_range;
 
     /** Generates an assertion if this class leaks */
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerCanvas);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (XYViewerCanvas);
 };
 
 } // namespace XYViewerPlugin

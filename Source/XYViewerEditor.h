@@ -31,21 +31,21 @@ namespace XYViewerPlugin
 
 class XYViewerEditor : public VisualizerEditor, public ComboBox::Listener
 {
-  public:
-    XYViewerEditor(GenericProcessor* parentNode);
+public:
+    XYViewerEditor (GenericProcessor* parentNode);
     ~XYViewerEditor() override = default;
 
     Visualizer* createNewCanvas() override;
 
-    void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
+    void comboBoxChanged (ComboBox* comboBoxThatHasChanged) override;
     void selectedStreamHasChanged() override;
 
-  private:
+private:
     std::unique_ptr<ComboBox> xChannelList = nullptr;
     std::unique_ptr<ComboBox> yChannelList = nullptr;
 
     /** Generates an assertion if this class leaks */
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerEditor);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (XYViewerEditor);
 };
 
 } // namespace XYViewerPlugin

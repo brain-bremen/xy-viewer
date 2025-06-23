@@ -39,7 +39,7 @@ struct ParameterNames
 
 class XYViewer : public GenericProcessor
 {
-  public:
+public:
     XYViewer();
     ~XYViewer() override;
 
@@ -56,38 +56,38 @@ class XYViewer : public GenericProcessor
         The process method is called every time a new data buffer is available.
         Visualizer plugins typically use this method to send data to the canvas for display purposes
      */
-    void process(AudioBuffer<float>& buffer) override;
+    void process (AudioBuffer<float>& buffer) override;
 
     bool startAcquisition() override;
     bool stopAcquisition() override;
-    
+
     /** Handles events received by the processor
         Called automatically for each received event whenever checkForEvents() is called from
         the plugin's process() method */
-    void handleTTLEvent(TTLEventPtr event) override;
+    void handleTTLEvent (TTLEventPtr event) override;
 
     /** Handles spikes received by the processor
         Called automatically for each received spike whenever checkForEvents(true) is called from
         the plugin's process() method */
-    void handleSpike(SpikePtr spike) override;
+    void handleSpike (SpikePtr spike) override;
 
     /** Saving custom settings to XML. This method is not needed to save the state of
         Parameter objects */
-    void saveCustomParametersToXml(XmlElement* parentElement) override;
+    void saveCustomParametersToXml (XmlElement* parentElement) override;
 
     /** Load custom settings from XML. This method is not needed to load the state of
         Parameter objects*/
-    void loadCustomParametersFromXml(XmlElement* parentElement) override;
+    void loadCustomParametersFromXml (XmlElement* parentElement) override;
 
-    Array<String> getChannelsForStream(uint16 streamdId) const;
-    void parameterValueChanged(Parameter*) override;
-    void setActiveChannel(uint16 streamId, String name);
+    Array<String> getChannelsForStream (uint16 streamdId) const;
+    void parameterValueChanged (Parameter*) override;
+    void setActiveChannel (uint16 streamId, String name);
 
-    void setCanvas(XYViewerCanvas* canvas) noexcept { m_canvas = canvas; }
+    void setCanvas (XYViewerCanvas* canvas) noexcept { m_canvas = canvas; }
 
-  private:
+private:
     /** Generates an assertion if this class leaks */
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (XYViewer);
 
     XYViewerCanvas* m_canvas = nullptr;
 

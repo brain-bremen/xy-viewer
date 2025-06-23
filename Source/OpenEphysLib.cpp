@@ -27,56 +27,56 @@
 
 #ifdef WIN32
 #include <Windows.h>
-#define EXPORT __declspec(dllexport)
+#define EXPORT __declspec (dllexport)
 #else
-#define EXPORT __attribute__((visibility("default")))
+#define EXPORT __attribute__ ((visibility ("default")))
 #endif
 
 using namespace Plugin;
 
 constexpr auto NUM_PLUGINS = 1;
 
-extern "C" EXPORT void getLibInfo(Plugin::LibraryInfo* info)
+extern "C" EXPORT void getLibInfo (Plugin::LibraryInfo* info)
 {
     info->apiVersion = PLUGIN_API_VER;
-    info->name = "XY Viewer";   // Name of the plugin library
+    info->name = "XY Viewer"; // Name of the plugin library
     info->libVersion = "0.1.0"; // Version of the plugin
     info->numPlugins = NUM_PLUGINS;
 }
 
-extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo* info)
+extern "C" EXPORT int getPluginInfo (int index, Plugin::PluginInfo* info)
 {
     switch (index)
     {
-        // one case per plugin. This example is for a processor which connects directly to the
-        // signal chain
-    case 0:
+            // one case per plugin. This example is for a processor which connects directly to the
+            // signal chain
+        case 0:
 
-        // Type of plugin. See "Source/Processors/PluginManager/OpenEphysPlugin.h" for complete info
-        // about the different type structures
-        info->type = Plugin::Type::PROCESSOR;
+            // Type of plugin. See "Source/Processors/PluginManager/OpenEphysPlugin.h" for complete info
+            // about the different type structures
+            info->type = Plugin::Type::PROCESSOR;
 
-        // Processor name
-        info->processor.name = "XY Viewer"; // Processor name shown in the GUI
+            // Processor name
+            info->processor.name = "XY Viewer"; // Processor name shown in the GUI
 
-        // Type of processor. Visualizers are usually sinks, but they can also be SOURCE or FILTER
-        // processors.
-        info->processor.type = Processor::Type::SINK;
+            // Type of processor. Visualizers are usually sinks, but they can also be SOURCE or FILTER
+            // processors.
+            info->processor.type = Processor::Type::SINK;
 
-        // Class factory pointer. Replace "ProcessorPluginSpace::ProcessorPlugin" with the namespace
-        // and class name.
-        info->processor.creator = &(Plugin::createProcessor<XYViewerPlugin::XYViewer>);
-        break;
+            // Class factory pointer. Replace "ProcessorPluginSpace::ProcessorPlugin" with the namespace
+            // and class name.
+            info->processor.creator = &(Plugin::createProcessor<XYViewerPlugin::XYViewer>);
+            break;
 
-    default:
-        return -1;
-        break;
+        default:
+            return -1;
+            break;
     }
     return 0;
 }
 
 #ifdef WIN32
-BOOL WINAPI DllMain(IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
+BOOL WINAPI DllMain (IN HINSTANCE hDllHandle, IN DWORD nReason, IN LPVOID Reserved)
 {
     return TRUE;
 }
