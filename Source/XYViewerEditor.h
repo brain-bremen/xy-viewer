@@ -33,15 +33,15 @@
 	Includes buttons for opening the canvas in a tab or window
 */
 
-class XYViewerPluginEditor : public VisualizerEditor
+class XYViewerEditor : public VisualizerEditor
 {
 public:
 
 	/** Constructor */
-	XYViewerPluginEditor(GenericProcessor* parentNode);
+	XYViewerEditor(GenericProcessor* parentNode);
 
 	/** Destructor */
-	~XYViewerPluginEditor() { }
+	~XYViewerEditor() { }
 
 	/** Creates the canvas */
 	Visualizer* createNewCanvas();
@@ -49,7 +49,7 @@ public:
 private:
 
 	/** Generates an assertion if this class leaks */
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerPluginEditor);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerEditor);
 };
 
 

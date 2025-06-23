@@ -3,7 +3,6 @@
 
 This file is part of a plugin for the Open Ephys GUI
 Copyright (C) 2022 Open Ephys
-Copyright (C) 2025 Joscha Schmiedt <schmiedt@uni-bremen.de>
 
 ------------------------------------------------------------------
 
@@ -22,50 +21,22 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 */
 
-#include "XYViewerPluginCanvas.h"
 
-#include "XYViewerPlugin.h"
+#include "XYViewer.h"
+
+#include "XYViewerCanvas.h"
+#include "XYViewerEditor.h"
 
 
-XYViewerPluginCanvas::XYViewerPluginCanvas(XYViewerPlugin* processor_)
-	: processor(processor_)
+XYViewerEditor::XYViewerEditor(GenericProcessor* p)
+    : VisualizerEditor(p, "XY Viewer", 200)
 {
+
+    //addSelectedChannelsParameterEditor("Channels", 20, 105);
 
 }
 
-
-XYViewerPluginCanvas::~XYViewerPluginCanvas()
+Visualizer* XYViewerEditor::createNewCanvas()
 {
-
-}
-
-
-void XYViewerPluginCanvas::resized()
-{
-
-}
-
-void XYViewerPluginCanvas::refreshState()
-{
-
-}
-
-
-//void XYViewerPluginCanvas::update()
-//{
-
-//}
-
-
-void XYViewerPluginCanvas::refresh()
-{
-
-}
-
-
-void XYViewerPluginCanvas::paint(Graphics& g)
-{
-
-	g.fillAll(Colours::black);
-
+    return new XYViewerCanvas((XYViewer*) getProcessor());;
 }

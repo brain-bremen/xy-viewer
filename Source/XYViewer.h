@@ -34,14 +34,14 @@
 	or an extended settings interface.
 */
 
-class XYViewerPlugin : public GenericProcessor
+class XYViewer : public GenericProcessor
 {
 public:
 	/** The class constructor, used to initialize any members.*/
-	XYViewerPlugin();
-
+	XYViewer();
+	
 	/** The class destructor, used to deallocate memory*/
-	~XYViewerPlugin() override;
+	~XYViewer() override;
 
 	/** If the processor has a custom editor, this method must be defined to instantiate it. */
 	AudioProcessorEditor* createEditor() override;
@@ -78,7 +78,7 @@ public:
 private:
 
 	/** Generates an assertion if this class leaks */
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerPlugin);
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewer);
 
 };
 

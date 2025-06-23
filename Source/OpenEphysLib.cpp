@@ -24,10 +24,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <PluginInfo.h>
 
-//#include "VisualizerPlugin.h" // update to point to your custom header file
-#include "XYViewerPlugin.h"
-
-#include <string>
+#include "XYViewer.h"
 
 #ifdef WIN32
 #include <Windows.h>
@@ -68,7 +65,7 @@ extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo* info)
 		info->processor.type = Processor::Type::SINK;
 
 		// Class factory pointer. Replace "ProcessorPluginSpace::ProcessorPlugin" with the namespace and class name.
-		info->processor.creator = &(Plugin::createProcessor<XYViewerPlugin>);
+		info->processor.creator = &(Plugin::createProcessor<XYViewer>);
 		break;
 
 	default:

@@ -22,53 +22,52 @@
 
 */
 
-#include "XYViewerPlugin.h"
+#include "XYViewer.h"
 
-#include "XYViewerPluginEditor.h"
+#include "XYViewerEditor.h"
 
 
-XYViewerPlugin::XYViewerPlugin() 
+XYViewer::XYViewer() 
     : GenericProcessor("XY Viewer")
 {
 
 }
 
 
-XYViewerPlugin::~XYViewerPlugin()
+XYViewer::~XYViewer()
 {
 
 }
 
 
-AudioProcessorEditor* XYViewerPlugin::createEditor()
+AudioProcessorEditor* XYViewer::createEditor()
 {
-    editor = std::make_unique<XYViewerPluginEditor>(this);
+    editor = std::make_unique<XYViewerEditor>(this);
     return editor.get();
 }
 
 
-void XYViewerPlugin::updateSettings()
+void XYViewer::updateSettings()
 {
 
 
 }
 
 
-void XYViewerPlugin::process(AudioBuffer<float>& buffer)
+void XYViewer::process(AudioBuffer<float>& buffer)
 {
 
     checkForEvents(true);
-	 
 }
 
 
-void XYViewerPlugin::handleTTLEvent(TTLEventPtr event)
+void XYViewer::handleTTLEvent(TTLEventPtr event)
 {
 
 }
 
 
-void XYViewerPlugin::handleSpike(SpikePtr spike)
+void XYViewer::handleSpike(SpikePtr spike)
 {
 
 }
@@ -80,13 +79,13 @@ void XYViewerPlugin::handleSpike(SpikePtr spike)
 //}
 
 
-void XYViewerPlugin::saveCustomParametersToXml(XmlElement* parentElement)
+void XYViewer::saveCustomParametersToXml(XmlElement* parentElement)
 {
 
 }
 
 
-void XYViewerPlugin::loadCustomParametersFromXml(XmlElement* parentElement)
+void XYViewer::loadCustomParametersFromXml(XmlElement* parentElement)
 {
 
 }
