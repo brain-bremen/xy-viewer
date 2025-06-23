@@ -23,8 +23,9 @@
 */
 
 #include "XYViewer.h"
-
 #include "XYViewerEditor.h"
+
+using namespace XYViewerPlugin;
 
 
 XYViewer::XYViewer() 

@@ -65,7 +65,7 @@ extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo* info)
 		info->processor.type = Processor::Type::SINK;
 
 		// Class factory pointer. Replace "ProcessorPluginSpace::ProcessorPlugin" with the namespace and class name.
-		info->processor.creator = &(Plugin::createProcessor<XYViewer>);
+		info->processor.creator = &(Plugin::createProcessor<XYViewerPlugin::XYViewer>);
 		break;
 
 	default:

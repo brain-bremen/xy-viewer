@@ -23,10 +23,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include "XYViewer.h"
-
 #include "XYViewerCanvas.h"
 #include "XYViewerEditor.h"
-
+using namespace XYViewerPlugin;
 
 XYViewerEditor::XYViewerEditor(GenericProcessor* p)
     : VisualizerEditor(p, "XY Viewer", 200)

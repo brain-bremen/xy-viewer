@@ -23,9 +23,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 #include "XYViewerCanvas.h"
-
 #include "XYViewer.h"
-
+using namespace XYViewerPlugin;
 
 XYViewerCanvas::XYViewerCanvas(XYViewer* processor_)
 	: processor(processor_)

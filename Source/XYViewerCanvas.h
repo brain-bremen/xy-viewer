@@ -26,49 +26,51 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include <VisualizerWindowHeaders.h>
 
-class XYViewer;
 
-/**
-* 
-	Draws data in real time
+namespace XYViewerPlugin {
+	class XYViewer;
 
-*/
-class XYViewerCanvas : public Visualizer
-{
-public:
+	/**
+	*
+		Draws data in real time
 
-	/** Constructor */
-	XYViewerCanvas(XYViewer* processor);
+	*/
+	class XYViewerCanvas : public Visualizer
+	{
+	public:
 
-	/** Destructor */
-	~XYViewerCanvas() override;
+		/** Constructor */
+		XYViewerCanvas(XYViewer* processor);
 
-	/** Updates boundaries of sub-components whenever the canvas size changes */
-	void resized() override;
+		/** Destructor */
+		~XYViewerCanvas() override;
 
-	/** Called when the visualizer's tab becomes visible again */
-	void refreshState() override;
+		/** Updates boundaries of sub-components whenever the canvas size changes */
+		void resized() override;
 
-	/** Updates settings */
-	//void update() override;
+		/** Called when the visualizer's tab becomes visible again */
+		void refreshState() override;
 
-	/** Called instead of "repaint()" to avoid re-painting sub-components*/
-	void refresh() override;
+		/** Updates settings */
+		//void update() override;
 
-	/** Draws the canvas background */
-	void paint(Graphics& g) override;
+		/** Called instead of "repaint()" to avoid re-painting sub-components*/
+		void refresh() override;
 
-private:
+		/** Draws the canvas background */
+		void paint(Graphics& g) override;
 
-	/** Pointer to the processor class */
-	XYViewer* processor;
+	private:
 
-	/** Class for plotting data */
-	InteractivePlot plt;
+		/** Pointer to the processor class */
+		XYViewer* processor;
 
-	/** Generates an assertion if this class leaks */
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerCanvas);
-};
+		/** Class for plotting data */
+		InteractivePlot plt;
 
+		/** Generates an assertion if this class leaks */
+		JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerCanvas);
+	};
 
+}
 #endif // SPECTRUMCANVAS_H_INCLUDED
