@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.15.0)
 if (NOT DEFINED GUI_BASE_DIR)
 	if (DEFINED ENV{GUI_BASE_DIR})
 		set(GUI_BASE_DIR $ENV{GUI_BASE_DIR})
@@ -18,6 +18,8 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 		set(CMAKE_BUILD_TYPE Debug)
 	endif()
 endif()
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 set_property(DIRECTORY APPEND PROPERTY COMPILE_DEFINITIONS
 	OEPLUGIN
