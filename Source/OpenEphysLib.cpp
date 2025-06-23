@@ -58,16 +58,16 @@ extern "C" EXPORT int getPluginInfo(int index, Plugin::PluginInfo* info)
 		//one case per plugin. This example is for a processor which connects directly to the signal chain
 	case 0:
 
-		//Type of plugin. See "Source/Processors/PluginManager/OpenEphysPlugin.h" for complete info about the different type structures
+		// Type of plugin. See "Source/Processors/PluginManager/OpenEphysPlugin.h" for complete info about the different type structures
 		info->type = Plugin::Type::PROCESSOR;
 
-		//Processor name
-		info->processor.name = "XY Viewer Plugin"; // Processor name shown in the GUI
+		// Processor name
+		info->processor.name = "XY Viewer"; // Processor name shown in the GUI
 
-		//Type of processor. Visualizers are usually sinks, but they can also be SOURCE or FILTER processors.
+		// Type of processor. Visualizers are usually sinks, but they can also be SOURCE or FILTER processors.
 		info->processor.type = Processor::Type::SINK;
 
-		//Class factory pointer. Replace "ProcessorPluginSpace::ProcessorPlugin" with the namespace and class name.
+		// Class factory pointer. Replace "ProcessorPluginSpace::ProcessorPlugin" with the namespace and class name.
 		info->processor.creator = &(Plugin::createProcessor<XYViewerPlugin>);
 		break;
 

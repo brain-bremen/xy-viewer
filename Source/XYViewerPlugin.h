@@ -41,7 +41,7 @@ public:
 	XYViewerPlugin();
 
 	/** The class destructor, used to deallocate memory*/
-	~XYViewerPlugin();
+	~XYViewerPlugin() override;
 
 	/** If the processor has a custom editor, this method must be defined to instantiate it. */
 	AudioProcessorEditor* createEditor() override;

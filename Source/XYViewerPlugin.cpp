@@ -28,7 +28,7 @@
 
 
 XYViewerPlugin::XYViewerPlugin() 
-    : GenericProcessor("Visualizer Plugin")
+    : GenericProcessor("XY Viewer")
 {
 
 }

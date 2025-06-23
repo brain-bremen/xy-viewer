@@ -29,7 +29,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
 XYViewerPluginEditor::XYViewerPluginEditor(GenericProcessor* p)
-    : VisualizerEditor(p, "Visualizer", 200)
+    : VisualizerEditor(p, "XY Viewer", 200)
 {
 
     //addSelectedChannelsParameterEditor("Channels", 20, 105);

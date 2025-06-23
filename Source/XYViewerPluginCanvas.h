@@ -41,7 +41,7 @@ public:
 	XYViewerPluginCanvas(XYViewerPlugin* processor);
 
 	/** Destructor */
-	~XYViewerPluginCanvas();
+	~XYViewerPluginCanvas() override;
 
 	/** Updates boundaries of sub-components whenever the canvas size changes */
 	void resized() override;
