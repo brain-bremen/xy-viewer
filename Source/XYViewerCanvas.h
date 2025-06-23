@@ -31,6 +31,10 @@ namespace XYViewerPlugin
 {
 class XYViewer;
 
+class XYFadingTracePlot : public InteractivePlot
+{ 
+};
+
 class XYViewerCanvas : public Visualizer
 {
   public:
@@ -63,6 +67,7 @@ class XYViewerCanvas : public Visualizer
 
     /** Class for plotting data */
     InteractivePlot m_plt;
+    XYRange m_range;
 
     /** Generates an assertion if this class leaks */
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerCanvas);

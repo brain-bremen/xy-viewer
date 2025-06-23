@@ -58,6 +58,9 @@ class XYViewer : public GenericProcessor
      */
     void process(AudioBuffer<float>& buffer) override;
 
+    bool startAcquisition() override;
+    bool stopAcquisition() override;
+    
     /** Handles events received by the processor
         Called automatically for each received event whenever checkForEvents() is called from
         the plugin's process() method */

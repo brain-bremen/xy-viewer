@@ -33,7 +33,7 @@ XYViewer::XYViewer()
 {
     m_channels.reserve(384);
     addIntParameter(Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length,
-                    "Window Length (ms)", "Duration of trace to keep in ms", 2000, 100, 60000);
+                    "Retention Period (ms)", "Duration of trace to keep in ms", 2000, 100, 60000);
 }
 
 XYViewer::~XYViewer() {}
@@ -62,6 +62,34 @@ void XYViewer::updateSettings()
 void XYViewer::process(AudioBuffer<float>& buffer)
 {
     checkForEvents(true);
+    for (int chan = 0; chan < buffer.getNumChannels(); ++chan)
+    {
+        const uint16 streamId = continuousChannels[chan]->getStreamId();
+
+        const uint32 nSamples = getNumSamplesInBlock(streamId);
+
+        String streamKey = getDataStream(streamId)->getKey();
+
+        // displayBufferMap[streamId]->addData (buffer, chan, nSamples);
+    }
+}
+
+bool XYViewer::startAcquisition()
+{
+    XYViewerEditor* editor_ = dynamic_cast<XYViewerEditor*>(getEditor());
+    if (!editor_) return false;
+    editor_->enable();
+
+    return true;
+}
+
+bool XYViewer::stopAcquisition()
+{
+    XYViewerEditor* editor_ = dynamic_cast<XYViewerEditor*>(getEditor());
+    if (!editor_) return false;
+    editor_->disable();
+
+    return true;
 }
 
 void XYViewer::handleTTLEvent(TTLEventPtr event) {}
