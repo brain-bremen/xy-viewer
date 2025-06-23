@@ -40,13 +40,23 @@ XYViewerEditor::XYViewerEditor(GenericProcessor* p)
     yChannelList->setBounds(50, 70, 120, 20);
     addAndMakeVisible(yChannelList.get());
 
-    addTextBoxParameterEditor(Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, 15,
-                              75);
+    addTextBoxParameterEditor(Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, 50,
+                              95);
 }
 
 Visualizer* XYViewerEditor::createNewCanvas()
 {
-    return new XYViewerCanvas(static_cast<XYViewer*>(getProcessor()));
+    XYViewer* xyViewerNode = dynamic_cast<XYViewer*>(getProcessor());
+    if (!xyViewerNode) return nullptr;
+
+    XYViewerCanvas* xyViewerCanvas = new XYViewerCanvas(xyViewerNode);
+    xyViewerNode->setCanvas(xyViewerCanvas);
+
+    xyViewerCanvas->setRetentionPeriodMs(
+        xyViewerNode->getParameter(ParameterNames::keep_window_length)->getValue());
+    xyViewerNode->setActiveChannel(selectedStream, xChannelList->getText());
+
+    return xyViewerCanvas;
 }
 
 void XYViewerEditor::comboBoxChanged(ComboBox* comboBoxThatHasChanged)

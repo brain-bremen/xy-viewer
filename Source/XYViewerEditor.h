@@ -21,9 +21,8 @@
 
 */
 
-// This prevents include loops. We recommend changing the macro to a name suitable for your plugin
-#ifndef VISUALIZERPLUGINEDITOR_H_DEFINED
-#define VISUALIZERPLUGINEDITOR_H_DEFINED
+#ifndef XYVIEWEREDITOR_H_DEFINED
+#define XYVIEWEREDITOR_H_DEFINED
 
 #include <VisualizerEditorHeaders.h>
 
@@ -36,7 +35,6 @@ class XYViewerEditor : public VisualizerEditor, public ComboBox::Listener
     XYViewerEditor(GenericProcessor* parentNode);
     ~XYViewerEditor() override = default;
 
-    /** Creates the canvas */
     Visualizer* createNewCanvas() override;
 
     void comboBoxChanged(ComboBox* comboBoxThatHasChanged) override;
@@ -51,4 +49,4 @@ class XYViewerEditor : public VisualizerEditor, public ComboBox::Listener
 };
 
 } // namespace XYViewerPlugin
-#endif // VISUALIZERPLUGINEDITOR_H_DEFINED
+#endif // XYVIEWEREDITOR_H_DEFINED

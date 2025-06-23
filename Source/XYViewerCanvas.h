@@ -22,8 +22,8 @@
 
 */
 
-#ifndef VISUALIZERCANVAS_H_INCLUDED
-#define VISUALIZERCANVAS_H_INCLUDED
+#ifndef XYVIEWERCANVAS_H_INCLUDED
+#define XYVIEWERCANVAS_H_INCLUDED
 
 #include <VisualizerWindowHeaders.h>
 
@@ -31,18 +31,10 @@ namespace XYViewerPlugin
 {
 class XYViewer;
 
-/**
-*
-    Draws data in real time
-
-*/
 class XYViewerCanvas : public Visualizer
 {
   public:
-    /** Constructor */
     XYViewerCanvas(XYViewer* processor);
-
-    /** Destructor */
     ~XYViewerCanvas() override;
 
     /** Updates boundaries of sub-components whenever the canvas size changes */
@@ -60,16 +52,21 @@ class XYViewerCanvas : public Visualizer
     /** Draws the canvas background */
     void paint(Graphics& g) override;
 
+    void setRetentionPeriodMs(int retentionPeriod) { m_retention_period_ms = retentionPeriod; }
+    void setPlotTitle(const String& title) { m_plt.setTitle(title); }
+
   private:
     /** Pointer to the processor class */
-    XYViewer* processor;
+    XYViewer* m_processor;
+
+    int m_retention_period_ms = 10000;
 
     /** Class for plotting data */
-    InteractivePlot plt;
+    InteractivePlot m_plt;
 
     /** Generates an assertion if this class leaks */
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(XYViewerCanvas);
 };
 
 } // namespace XYViewerPlugin
-#endif // SPECTRUMCANVAS_H_INCLUDED
+#endif // XYVIEWERCANVAS_H_INCLUDED

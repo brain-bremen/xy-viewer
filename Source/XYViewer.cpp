@@ -23,6 +23,7 @@
 */
 
 #include "XYViewer.h"
+#include "XYViewerCanvas.h"
 #include "XYViewerEditor.h"
 
 using namespace XYViewerPlugin;
@@ -50,6 +51,11 @@ void XYViewer::updateSettings()
     {
         m_channels.emplace_back(contChan->getName(), contChan->getStreamId(),
                                 contChan->getSampleRate());
+    }
+
+    if (m_canvas)
+    {
+        parameterValueChanged(getParameter(ParameterNames::keep_window_length));
     }
 }
 
@@ -91,6 +97,7 @@ void XYViewer::parameterValueChanged(Parameter* parameter)
     if (parameter->getName().equalsIgnoreCase(ParameterNames::keep_window_length))
     {
         int keep_window_length = static_cast<int>(parameter->getValue());
+        if (m_canvas) m_canvas->setRetentionPeriodMs(keep_window_length);
     }
 }
 
@@ -101,6 +108,10 @@ void XYViewer::setActiveChannel(uint16 streamId, String name)
         if (channel.name.equalsIgnoreCase(name) && channel.streamID == streamId)
         {
             channel.isActive = true;
+            if (m_canvas)
+            {
+                m_canvas->setPlotTitle(channel.name);
+            }
         }
 
         else

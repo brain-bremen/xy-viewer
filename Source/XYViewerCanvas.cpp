@@ -27,8 +27,15 @@
 using namespace XYViewerPlugin;
 
 XYViewerCanvas::XYViewerCanvas(XYViewer* processor_)
-    : processor(processor_)
+    : m_processor(processor_)
 {
+    m_plt.xlabel("X");
+    m_plt.ylabel("Y");
+    m_plt.title("X vs Y");
+    m_plt.setInteractive(InteractivePlotMode::OFF);
+    m_plt.setBackgroundColour(Colours::darkolivegreen);
+    addAndMakeVisible(m_plt);
+    m_plt.setBounds(1, 1, 640  , 480);
 }
 
 XYViewerCanvas::~XYViewerCanvas() {}
