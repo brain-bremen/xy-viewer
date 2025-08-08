@@ -23,6 +23,7 @@
 */
 
 #include "XYViewer.h"
+#include "CircularXYBuffer.h"
 #include "XYViewerCanvas.h"
 #include "XYViewerEditor.h"
 
@@ -30,9 +31,14 @@ using namespace XYViewerPlugin;
 
 XYViewer::XYViewer()
     : GenericProcessor ("XY Viewer")
+    , m_xyBuffer (30000 * 60)
 {
     m_channels.reserve (384);
     addIntParameter (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, "Retention Period (ms)", "Duration of trace to keep in ms", 2000, 100, 60000);
+    // Let's assume a default buffer size of 60 seconds at 30kHz (max)
+    //constexpr int maxSampleRate = 30000;
+    //constexpr int maxSeconds = 60;
+    //m_xyBuffer = std::make_unique<CircularXYBuffer> (maxSampleRate * maxSeconds);
 }
 
 XYViewer::~XYViewer() {}
@@ -60,6 +66,14 @@ void XYViewer::updateSettings()
 void XYViewer::process (AudioBuffer<float>& buffer)
 {
     checkForEvents (true);
+    // Only push if both X and Y channels are valid
+    if (m_xChannelIndex >= 0 && m_yChannelIndex >= 0 && m_xChannelIndex < buffer.getNumChannels() && m_yChannelIndex < buffer.getNumChannels())
+    {
+        const int nSamples = buffer.getNumSamples();
+        const float* x = buffer.getReadPointer (m_xChannelIndex);
+        const float* y = buffer.getReadPointer (m_yChannelIndex);
+        m_xyBuffer.push (x, y, nSamples);
+    }
     for (int chan = 0; chan < buffer.getNumChannels(); ++chan)
     {
         const uint16 streamId = continuousChannels[chan]->getStreamId();
@@ -67,7 +81,6 @@ void XYViewer::process (AudioBuffer<float>& buffer)
         const uint32 nSamples = getNumSamplesInBlock (streamId);
 
         String streamKey = getDataStream (streamId)->getKey();
-        displayBufferMap[streamId]->addData (buffer, chan, nSamples);
     }
 }
 
@@ -92,13 +105,6 @@ bool XYViewer::stopAcquisition()
 }
 
 void XYViewer::handleTTLEvent (TTLEventPtr event) {}
-
-void XYViewer::handleSpike (SpikePtr spike) {}
-
-// void XYViewerPlugin::handleBroadcastMessage(String message)
-//{
-
-//}
 
 void XYViewer::saveCustomParametersToXml (XmlElement* parentElement) {}
 
@@ -149,41 +155,13 @@ void XYViewer::setActiveChannel (uint16 streamId, String name)
     }
 }
 
-// Set the active X and Y channels by index
-void XYViewer::setActiveChannels(int xIndex, int yIndex)
-{
-    m_xChannelIndex = xIndex;
-    m_yChannelIndex = yIndex;
-}
-
 // Get the latest X and Y data for plotting (thread-safe copy)
-void XYViewer::getXYData(std::vector<float>& x, std::vector<float>& y, int retentionMs)
+void XYViewer::getXYData (std::vector<float>& x, std::vector<float>& y, int retentionMs)
 {
-    x.clear();
-    y.clear();
-    if (m_xChannelIndex < 0 || m_yChannelIndex < 0 || m_xChannelIndex >= (int)m_channels.size() || m_yChannelIndex >= (int)m_channels.size())
-        return;
-    const auto& xInfo = m_channels[m_xChannelIndex];
-    const auto& yInfo = m_channels[m_yChannelIndex];
-    auto xBufferIt = displayBufferMap.find(xInfo.streamID);
-    auto yBufferIt = displayBufferMap.find(yInfo.streamID);
-    if (xBufferIt == displayBufferMap.end() || yBufferIt == displayBufferMap.end())
-        return;
-    auto* xBuffer = xBufferIt->second;
-    auto* yBuffer = yBufferIt->second;
-    const float sampleRate = xInfo.sampleRate;
-    const int nSamples = int(sampleRate * retentionMs / 1000.0f);
-    const int xChanIdx = 0; // Assume single channel per buffer for now
-    const int yChanIdx = 0;
-    const int totalSamples = xBuffer->getNumSamples();
-    const int startIdx = (totalSamples - nSamples + totalSamples) % totalSamples;
-    x.reserve(nSamples);
-    y.reserve(nSamples);
-    const ScopedLock lockX(xBuffer->displayMutex);
-    const ScopedLock lockY(yBuffer->displayMutex);
-    for (int i = 0; i < nSamples; ++i) {
-        int idx = (startIdx + i) % totalSamples;
-        x.push_back(xBuffer->getSample(xChanIdx, idx));
-        y.push_back(yBuffer->getSample(yChanIdx, idx));
-    }
+    // Use the sample rate of the X channel (if available)
+    float sampleRate = 30000.0f;
+    if (m_xChannelIndex >= 0 && m_xChannelIndex < (int) m_channels.size())
+        sampleRate = m_channels[m_xChannelIndex].sampleRate;
+    int nSamples = int (sampleRate * retentionMs / 1000.0f);
+    m_xyBuffer.getLatest (x, y, nSamples);
 }

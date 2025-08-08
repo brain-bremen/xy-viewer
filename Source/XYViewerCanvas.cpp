@@ -149,17 +149,19 @@ void XYViewerCanvas::refresh()
     std::vector<float> x;
     std::vector<float> y;
 
-    // WIP: Draw random points for now
-    int nPoints = 100; // or use a member variable if defined elsewhere
-    std::random_device rd;
-    std::mt19937 gen (rd());
-    std::uniform_real_distribution<float> dist (0.0f, 1.0f);
+    //// WIP: Draw random points for now
+    //int nPoints = 100; // or use a member variable if defined elsewhere
+    //std::random_device rd;
+    //std::mt19937 gen (rd());
+    //std::uniform_real_distribution<float> dist (0.0f, 1.0f);
 
-    for (int i = 0; i < nPoints; ++i)
-    {
-        x.push_back (dist (gen) + i);
-        y.push_back (dist (gen) + i);
-    }
+    //for (int i = 0; i < nPoints; ++i)
+    //{
+    //    x.push_back (dist (gen) + i);
+    //    y.push_back (dist (gen) + i);
+    //}
+
+    m_processor->getXYData (x, y, 100);
 
     m_plt.clear();
     XyLineFading* line = new XyLineFading (x, y);

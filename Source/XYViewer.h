@@ -25,7 +25,8 @@
 #ifndef XYVIEWER_H_DEFINED
 #define XYVIEWER_H_DEFINED
 
-#include "DisplayBuffer.h"
+#include "CircularXYBuffer.h"
+//#include "DisplayBuffer.h"
 
 #include <ProcessorHeaders.h>
 
@@ -68,11 +69,6 @@ public:
         the plugin's process() method */
     void handleTTLEvent (TTLEventPtr event) override;
 
-    /** Handles spikes received by the processor
-        Called automatically for each received spike whenever checkForEvents(true) is called from
-        the plugin's process() method */
-    void handleSpike (SpikePtr spike) override;
-
     /** Saving custom settings to XML. This method is not needed to save the state of
         Parameter objects */
     void saveCustomParametersToXml (XmlElement* parentElement) override;
@@ -102,18 +98,18 @@ private:
     };
     std::vector<ContinuousChannelInfo> m_channels;
     std::unordered_map<const ContinuousChannel*, ContinuousChannelInfo*> m_channelMap;
-    std::map<uint16, XyViewer::DisplayBuffer*> displayBufferMap;
 
     // --- XYViewer additions for XY plotting ---
-    int m_xChannelIndex = -1; // Index of selected X channel in m_channels
-    int m_yChannelIndex = -1; // Index of selected Y channel in m_channels
+    int m_xChannelIndex = 0; // Index of selected X channel in m_channels
+    int m_yChannelIndex = 1; // Index of selected Y channel in m_channels
 
 public:
-    // Set the active X and Y channels by index
-    void setActiveChannels(int xIndex, int yIndex);
 
     // Get the latest X and Y data for plotting (thread-safe copy)
-    void getXYData(std::vector<float>& x, std::vector<float>& y, int retentionMs);
+    void getXYData (std::vector<float>& x, std::vector<float>& y, int retentionMs);
+
+private:
+    CircularXYBuffer m_xyBuffer;
 };
 
 } // namespace XYViewerPlugin
