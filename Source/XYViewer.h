@@ -25,6 +25,8 @@
 #ifndef XYVIEWER_H_DEFINED
 #define XYVIEWER_H_DEFINED
 
+#include "DisplayBuffer.h"
+
 #include <ProcessorHeaders.h>
 
 namespace XYViewerPlugin
@@ -100,6 +102,18 @@ private:
     };
     std::vector<ContinuousChannelInfo> m_channels;
     std::unordered_map<const ContinuousChannel*, ContinuousChannelInfo*> m_channelMap;
+    std::map<uint16, XyViewer::DisplayBuffer*> displayBufferMap;
+
+    // --- XYViewer additions for XY plotting ---
+    int m_xChannelIndex = -1; // Index of selected X channel in m_channels
+    int m_yChannelIndex = -1; // Index of selected Y channel in m_channels
+
+public:
+    // Set the active X and Y channels by index
+    void setActiveChannels(int xIndex, int yIndex);
+
+    // Get the latest X and Y data for plotting (thread-safe copy)
+    void getXYData(std::vector<float>& x, std::vector<float>& y, int retentionMs);
 };
 
 } // namespace XYViewerPlugin

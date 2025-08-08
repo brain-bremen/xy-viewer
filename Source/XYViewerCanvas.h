@@ -31,8 +31,19 @@ namespace XYViewerPlugin
 {
 class XYViewer;
 
-class XYFadingTracePlot : public InteractivePlot
+class XyLineFading : public ::XYLine
 {
+public:
+    //XyLineFading (std::vector<float> x, std::vector<float> y, Colour c, float maxWidth, float maxOpacity);
+    XyLineFading (std::vector<float> x, std::vector<float> y);
+    void draw (Graphics& g, XYRange& range, int width, int height) override;
+};
+
+class XYFadingTracePlot : public ::InteractivePlot
+{
+public:
+    void plot (std::vector<float> x, std::vector<float> y, Colour c, float width, float opacity, PlotType type) override;
+    void plot (XyLineFading* line) const;
 };
 
 class XYViewerCanvas : public Visualizer
@@ -66,7 +77,7 @@ private:
     int m_retention_period_ms = 10000;
 
     /** Class for plotting data */
-    InteractivePlot m_plt;
+    XYFadingTracePlot m_plt;
     XYRange m_range;
 
     /** Generates an assertion if this class leaks */

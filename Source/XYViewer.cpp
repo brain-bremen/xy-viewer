@@ -67,8 +67,7 @@ void XYViewer::process (AudioBuffer<float>& buffer)
         const uint32 nSamples = getNumSamplesInBlock (streamId);
 
         String streamKey = getDataStream (streamId)->getKey();
-
-        // displayBufferMap[streamId]->addData (buffer, chan, nSamples);
+        displayBufferMap[streamId]->addData (buffer, chan, nSamples);
     }
 }
 
@@ -147,5 +146,44 @@ void XYViewer::setActiveChannel (uint16 streamId, String name)
         {
             channel.isActive = false;
         }
+    }
+}
+
+// Set the active X and Y channels by index
+void XYViewer::setActiveChannels(int xIndex, int yIndex)
+{
+    m_xChannelIndex = xIndex;
+    m_yChannelIndex = yIndex;
+}
+
+// Get the latest X and Y data for plotting (thread-safe copy)
+void XYViewer::getXYData(std::vector<float>& x, std::vector<float>& y, int retentionMs)
+{
+    x.clear();
+    y.clear();
+    if (m_xChannelIndex < 0 || m_yChannelIndex < 0 || m_xChannelIndex >= (int)m_channels.size() || m_yChannelIndex >= (int)m_channels.size())
+        return;
+    const auto& xInfo = m_channels[m_xChannelIndex];
+    const auto& yInfo = m_channels[m_yChannelIndex];
+    auto xBufferIt = displayBufferMap.find(xInfo.streamID);
+    auto yBufferIt = displayBufferMap.find(yInfo.streamID);
+    if (xBufferIt == displayBufferMap.end() || yBufferIt == displayBufferMap.end())
+        return;
+    auto* xBuffer = xBufferIt->second;
+    auto* yBuffer = yBufferIt->second;
+    const float sampleRate = xInfo.sampleRate;
+    const int nSamples = int(sampleRate * retentionMs / 1000.0f);
+    const int xChanIdx = 0; // Assume single channel per buffer for now
+    const int yChanIdx = 0;
+    const int totalSamples = xBuffer->getNumSamples();
+    const int startIdx = (totalSamples - nSamples + totalSamples) % totalSamples;
+    x.reserve(nSamples);
+    y.reserve(nSamples);
+    const ScopedLock lockX(xBuffer->displayMutex);
+    const ScopedLock lockY(yBuffer->displayMutex);
+    for (int i = 0; i < nSamples; ++i) {
+        int idx = (startIdx + i) % totalSamples;
+        x.push_back(xBuffer->getSample(xChanIdx, idx));
+        y.push_back(yBuffer->getSample(yChanIdx, idx));
     }
 }

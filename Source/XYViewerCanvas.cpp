@@ -28,6 +28,94 @@
 #include <random>
 using namespace XYViewerPlugin;
 
+XyLineFading::XyLineFading (std::vector<float> x, std::vector<float> y)
+    : ::XYLine (std::move(x), std::move(y))
+{
+}
+//XyLineFading::XyLineFading (std::vector<float> x, std::vector<float> y)
+    //: ::XYLine (x, y)
+//{
+    //XYLine::setColour (c);
+    //XYLine::setWidth (maxWidth);
+    //XYLine::setOpacity (maxOpacity);
+    //XYLine::setType (PlotType::LINE);
+//}
+void XyLineFading::draw (Graphics& g, XYRange& range_, int plotWidth, int plotHeight)
+{
+    if (type != PlotType::LINE)
+        return;
+    //XYLine::draw (g, range, plotWidth, plotHeight);
+
+    float yrange = range.ymax - range.ymin;
+    float xrange = range.xmax - range.xmin;
+
+    float startOpacity = 0.2f;
+    float endOpacity = opacity;
+    float startWidth = width * 0.2f;
+    float endWidth = width;
+
+    if (yrange < 1e-6 || xrange < 1e-6)
+        return;
+
+    for (int i = 1; i < x.size(); i++)
+    {
+        const float t = static_cast<float> (i) / static_cast<float> (x.size() - 1); // Progress from 0 to 1
+
+        float segOpacity = startOpacity + t * (endOpacity - startOpacity);
+        float segWidth = startWidth + t * (endWidth - startWidth);
+        float x_start = (x[i - 1] - range.xmin) / xrange;
+        float x_end = (x[i] - range.xmin) / xrange;
+
+        g.setColour (colour.withAlpha (segOpacity));
+        if ((x_start < 0 && x_end < 0) || (x_start > 1 && x_end > 1))
+            continue;
+
+        if (i >= y.size())
+            continue;
+
+        float y_start = (y[i - 1] - range.ymin) / yrange;
+        float y_end = (y[i] - range.ymin) / yrange;
+
+        if ((y_start < 0 && y_end < 0) || (y_start > 1 && y_end > 1))
+            continue;
+
+        if (true)
+        {
+            x_start = x_start * plotWidth;
+            x_end = x_end * plotWidth;
+        }
+        //else
+        //{
+        //	x_start = plotWidth - x_start * plotWidth;
+        //	x_end = plotWidth - x_end * plotWidth;
+        //}
+
+        if (true)
+        {
+            y_start = plotHeight - y_start * plotHeight;
+            y_end = plotHeight - y_end * plotHeight;
+        }
+
+        //else
+        //	y_start = y_start * plotHeight;
+
+        g.drawLine (x_start,
+                    y_start,
+                    x_end,
+                    y_end,
+                    segWidth);
+    }
+}
+void XYFadingTracePlot::plot (std::vector<float> x, std::vector<float> y, Colour c, float width, float opacity, PlotType type)
+{
+    ::InteractivePlot::plot (std::move (x), std::move (y), c, width, opacity, type);
+}
+void XYFadingTracePlot::plot (XyLineFading* line) const
+{
+    if (! line)
+        return;
+    drawComponent->add (line);
+}
 XYViewerCanvas::XYViewerCanvas (XYViewer* processor_)
     : m_processor (processor_)
 {
@@ -74,7 +162,16 @@ void XYViewerCanvas::refresh()
     }
 
     m_plt.clear();
-    m_plt.plot (x, y, Colours::black, 2.0, 0.8f, PlotType::LINE);
+    XyLineFading* line = new XyLineFading (x, y);
+
+    line->setColour (Colours::black);
+    line->setWidth (2.0f);
+    line->setOpacity (1.0f);
+    line->setType (PlotType::LINE);
+    //line->setColour (c)
+        //m_plt.plot (x, y, Colours::black, 2.0, 0.8f, PlotType::LINE);
+
+    m_plt.plot (line);
 }
 
 void XYViewerCanvas::paint (Graphics& g)
