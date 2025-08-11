@@ -30,18 +30,13 @@
 using namespace XYViewerPlugin;
 
 XYViewer::XYViewer()
-    : GenericProcessor ("XY Viewer")
-    , m_xyBuffer (30000 * 60)
+    : GenericProcessor ("XY Viewer"), m_xyBuffer (30000 * 60)
 {
     m_channels.reserve (384);
-    addIntParameter (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, "Retention Period (ms)", "Duration of trace to keep in ms", 2000, 100, 60000);
-    // Let's assume a default buffer size of 60 seconds at 30kHz (max)
-    //constexpr int maxSampleRate = 30000;
-    //constexpr int maxSeconds = 60;
-    //m_xyBuffer = std::make_unique<CircularXYBuffer> (maxSampleRate * maxSeconds);
+    addIntParameter (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, "Retention (ms)", "Duration of trace to keep in ms", 2000, 100, 10000);
 }
 
-XYViewer::~XYViewer() {}
+XYViewer::~XYViewer() = default;
 
 AudioProcessorEditor* XYViewer::createEditor()
 {
@@ -65,23 +60,21 @@ void XYViewer::updateSettings()
 
 void XYViewer::process (AudioBuffer<float>& buffer)
 {
-    checkForEvents (true);
+    //checkForEvents (true);
     // Only push if both X and Y channels are valid
     if (m_xChannelIndex >= 0 && m_yChannelIndex >= 0 && m_xChannelIndex < buffer.getNumChannels() && m_yChannelIndex < buffer.getNumChannels())
     {
-        const int nSamples = buffer.getNumSamples();
+        const auto nSamples = buffer.getNumSamples();
         const float* x = buffer.getReadPointer (m_xChannelIndex);
         const float* y = buffer.getReadPointer (m_yChannelIndex);
         m_xyBuffer.push (x, y, nSamples);
     }
-    for (int chan = 0; chan < buffer.getNumChannels(); ++chan)
-    {
-        const uint16 streamId = continuousChannels[chan]->getStreamId();
-
-        const uint32 nSamples = getNumSamplesInBlock (streamId);
-
-        String streamKey = getDataStream (streamId)->getKey();
-    }
+    //for (int chan = 0; chan < buffer.getNumChannels(); ++chan)
+    //{
+    //const uint16 streamId = continuousChannels[chan]->getStreamId();
+    //const uint32 nSamples = getNumSamplesInBlock (streamId);
+    //String streamKey = getDataStream (streamId)->getKey();
+    //}
 }
 
 bool XYViewer::startAcquisition()
@@ -135,23 +128,40 @@ void XYViewer::parameterValueChanged (Parameter* parameter)
     }
 }
 
-void XYViewer::setActiveChannel (uint16 streamId, String name)
+void XYViewer::setActiveXChannel (uint16 streamId,  const String& name)
 {
+    int index = 0;
     for (auto& channel : m_channels)
     {
         if (channel.name.equalsIgnoreCase (name) && channel.streamID == streamId)
         {
-            channel.isActive = true;
+            m_xChannelIndex = index;
+            m_xName = name;
             if (m_canvas)
             {
                 m_canvas->setPlotTitle (channel.name);
             }
+            return;
         }
-
-        else
+        index++;
+    }
+}
+void XYViewer::setActiveYChannel (uint16 streamId,  const String& name)
+{
+    int index = 0;
+    for (auto& channel : m_channels)
+    {
+        if (channel.name.equalsIgnoreCase (name) && channel.streamID == streamId)
         {
-            channel.isActive = false;
+            m_yChannelIndex = index;
+            m_xName = name;
+            if (m_canvas)
+            {
+                m_canvas->setPlotTitle (channel.name);
+            }
+            return;
         }
+        index++;
     }
 }
 

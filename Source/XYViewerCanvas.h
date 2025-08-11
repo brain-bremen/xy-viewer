@@ -35,8 +35,10 @@ class XyLineFading : public ::XYLine
 {
 public:
     //XyLineFading (std::vector<float> x, std::vector<float> y, Colour c, float maxWidth, float maxOpacity);
-    XyLineFading (std::vector<float> x, std::vector<float> y);
+    XyLineFading (std::vector<float>&& x, std::vector<float>&& y);
     void draw (Graphics& g, XYRange& range, int width, int height) override;
+    std::vector<float> X;
+    std::vector<float> Y;
 };
 
 class XYFadingTracePlot : public ::InteractivePlot

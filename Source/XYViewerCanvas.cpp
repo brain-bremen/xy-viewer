@@ -28,17 +28,17 @@
 #include <random>
 using namespace XYViewerPlugin;
 
-XyLineFading::XyLineFading (std::vector<float> x, std::vector<float> y)
-    : ::XYLine (std::move(x), std::move(y))
+XyLineFading::XyLineFading (std::vector<float>&& x, std::vector<float>&& y)
+    : ::XYLine (std::move (x), std::move (y)), X (std::move (x)), Y (std::move (y))
 {
 }
 //XyLineFading::XyLineFading (std::vector<float> x, std::vector<float> y)
-    //: ::XYLine (x, y)
+//: ::XYLine (x, y)
 //{
-    //XYLine::setColour (c);
-    //XYLine::setWidth (maxWidth);
-    //XYLine::setOpacity (maxOpacity);
-    //XYLine::setType (PlotType::LINE);
+//XYLine::setColour (c);
+//XYLine::setWidth (maxWidth);
+//XYLine::setOpacity (maxOpacity);
+//XYLine::setType (PlotType::LINE);
 //}
 void XyLineFading::draw (Graphics& g, XYRange& range_, int plotWidth, int plotHeight)
 {
@@ -160,18 +160,18 @@ void XYViewerCanvas::refresh()
     //    x.push_back (dist (gen) + i);
     //    y.push_back (dist (gen) + i);
     //}
-
-    m_processor->getXYData (x, y, 100);
+    auto retentionPeriodMs = m_processor->getParameter (XYViewerPlugin::ParameterNames::keep_window_length)->getValue();
+    m_processor->getXYData (x, y, m_retention_period_ms);
 
     m_plt.clear();
-    XyLineFading* line = new XyLineFading (x, y);
+    XyLineFading* line = new XyLineFading (std::move(x), std::move(y));
 
     line->setColour (Colours::black);
     line->setWidth (2.0f);
     line->setOpacity (1.0f);
     line->setType (PlotType::LINE);
     //line->setColour (c)
-        //m_plt.plot (x, y, Colours::black, 2.0, 0.8f, PlotType::LINE);
+    //m_plt.plot (x, y, Colours::black, 2.0, 0.8f, PlotType::LINE);
 
     m_plt.plot (line);
 }

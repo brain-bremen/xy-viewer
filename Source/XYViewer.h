@@ -79,7 +79,8 @@ public:
 
     Array<String> getChannelsForStream (uint16 streamdId) const;
     void parameterValueChanged (Parameter*) override;
-    void setActiveChannel (uint16 streamId, String name);
+    void setActiveXChannel (uint16 streamId,  const String& name);
+    void setActiveYChannel (uint16 streamId,  const String& name);
 
     void setCanvas (XYViewerCanvas* canvas) noexcept { m_canvas = canvas; }
 
@@ -94,17 +95,18 @@ private:
         String name;
         uint16 streamID = 0;
         float sampleRate = 0.0f;
-        bool isActive = false;
+        //bool isActive = false;
     };
     std::vector<ContinuousChannelInfo> m_channels;
-    std::unordered_map<const ContinuousChannel*, ContinuousChannelInfo*> m_channelMap;
+    //std::unordered_map<const ContinuousChannel*, ContinuousChannelInfo*> m_channelMap;
 
     // --- XYViewer additions for XY plotting ---
     int m_xChannelIndex = 0; // Index of selected X channel in m_channels
     int m_yChannelIndex = 1; // Index of selected Y channel in m_channels
+    String m_xName;
+    String m_yName;
 
 public:
-
     // Get the latest X and Y data for plotting (thread-safe copy)
     void getXYData (std::vector<float>& x, std::vector<float>& y, int retentionMs);
 

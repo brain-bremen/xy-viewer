@@ -32,15 +32,15 @@ XYViewerEditor::XYViewerEditor (GenericProcessor* p)
 {
     xChannelList = std::make_unique<ComboBox> ("X Channel List");
     xChannelList->addListener (this);
-    xChannelList->setBounds (50, 40, 120, 20);
+    xChannelList->setBounds (10, 40, 120, 20);
     addAndMakeVisible (xChannelList.get());
 
     yChannelList = std::make_unique<ComboBox> ("Y Channel List");
     yChannelList->addListener (this);
-    yChannelList->setBounds (50, 70, 120, 20);
+    yChannelList->setBounds (10, 70, 120, 20);
     addAndMakeVisible (yChannelList.get());
 
-    addTextBoxParameterEditor (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, 50, 95);
+    addTextBoxParameterEditor (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, 10, 95);
 }
 
 Visualizer* XYViewerEditor::createNewCanvas()
@@ -54,7 +54,7 @@ Visualizer* XYViewerEditor::createNewCanvas()
 
     xyViewerCanvas->setRetentionPeriodMs (
         xyViewerNode->getParameter (ParameterNames::keep_window_length)->getValue());
-    xyViewerNode->setActiveChannel (selectedStream, xChannelList->getText());
+    //xyViewerNode->setActiveChannel (selectedStream, xChannelList->getText());
 
     return xyViewerCanvas;
 }
@@ -63,14 +63,22 @@ void XYViewerEditor::comboBoxChanged (ComboBox* comboBoxThatHasChanged)
 {
     if (! comboBoxThatHasChanged)
         return;
-    if (comboBoxThatHasChanged == xChannelList.get() && comboBoxThatHasChanged->getNumItems() > 0)
-    {
-        XYViewer* xyViewerNode = dynamic_cast<XYViewer*> (getProcessor());
-        if (! xyViewerNode)
-            return;
+    XYViewer* xyViewerNode = dynamic_cast<XYViewer*> (getProcessor());
+    if (! xyViewerNode)
+        return;
 
-        xyViewerNode->setActiveChannel (selectedStream, comboBoxThatHasChanged->getText());
-        // xyViewerNode->setActiveYChannel(selectedStream, comboBoxThatHasChanged->getText());
+    if (comboBoxThatHasChanged->getNumItems() <= 0)
+        return;
+
+    const auto selectedCHannel = comboBoxThatHasChanged->getText();
+
+    if (comboBoxThatHasChanged == xChannelList.get())
+    {
+        xyViewerNode->setActiveXChannel (selectedStream, comboBoxThatHasChanged->getText());
+    }
+    else if (comboBoxThatHasChanged == yChannelList.get())
+    {
+        xyViewerNode->setActiveYChannel (selectedStream, comboBoxThatHasChanged->getText());
     }
 }
 
