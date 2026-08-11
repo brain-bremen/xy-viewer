@@ -23,6 +23,8 @@
 
 #include <PluginInfo.h>
 
+#include <PluginVersion.h>
+
 #include "XYViewer.h"
 
 #ifdef WIN32
@@ -40,7 +42,7 @@ extern "C" EXPORT void getLibInfo (Plugin::LibraryInfo* info)
 {
     info->apiVersion = PLUGIN_API_VER;
     info->name = "XY Viewer"; // Name of the plugin library
-    info->libVersion = "0.1.0"; // Version of the plugin
+    info->libVersion = PLUGIN_VERSION_STRING; // Version of the plugin
     info->numPlugins = NUM_PLUGINS;
 }
 

@@ -10,7 +10,14 @@ endif()
 get_filename_component(PROJECT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} ABSOLUTE)
 get_filename_component(PLUGIN_NAME ${PROJECT_FOLDER} NAME)
 
-project(OE_PLUGIN_${PLUGIN_NAME})
+# Plugin version. Single source of truth: PluginVersion.h is generated from
+# this, getLibInfo() reports it, and the Windows resource stamps the DLL with it.
+set(PLUGIN_VERSION_MAJOR 0)
+set(PLUGIN_VERSION_MINOR 1)
+set(PLUGIN_VERSION_PATCH 0)
+set(PLUGIN_VERSION "${PLUGIN_VERSION_MAJOR}.${PLUGIN_VERSION_MINOR}.${PLUGIN_VERSION_PATCH}")
+
+project(OE_PLUGIN_${PLUGIN_NAME} VERSION ${PLUGIN_VERSION})
 set(CMAKE_SHARED_LIBRARY_PREFIX "")
 if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 	set(LINUX 1)
@@ -36,6 +43,19 @@ set(SOURCE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/Source)
 file(GLOB_RECURSE SRC_FILES LIST_DIRECTORIES false "${SOURCE_PATH}/*.cpp" "${SOURCE_PATH}/*.h")
 set(GUI_COMMONLIB_DIR ${GUI_BASE_DIR}/installed_libs)
 
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/Source/PluginVersion.h.in
+	${CMAKE_CURRENT_BINARY_DIR}/PluginVersion.h
+	@ONLY)
+
+if (WIN32)
+	configure_file(
+		${CMAKE_CURRENT_SOURCE_DIR}/Resources/Version.rc.in
+		${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}_Version.rc
+		@ONLY)
+	list(APPEND SRC_FILES ${CMAKE_CURRENT_BINARY_DIR}/${PLUGIN_NAME}_Version.rc)
+endif()
+
 set(CONFIGURATION_FOLDER $<$<CONFIG:Debug>:Debug>$<$<NOT:$<CONFIG:Debug>>:Release>)
  
 list(APPEND CMAKE_PREFIX_PATH ${GUI_COMMONLIB_DIR} ${GUI_COMMONLIB_DIR}/${CONFIGURATION_FOLDER})
@@ -47,7 +67,16 @@ else()
 endif()
 
 target_compile_features(${PLUGIN_NAME} PUBLIC cxx_auto_type cxx_generalized_initializers cxx_std_20)
-target_include_directories(${PLUGIN_NAME} PUBLIC ${GUI_BASE_DIR}/JuceLibraryCode ${GUI_BASE_DIR}/JuceLibraryCode/modules ${GUI_BASE_DIR}/Plugins/Headers ${GUI_COMMONLIB_DIR}/include)
+target_include_directories(${PLUGIN_NAME} PUBLIC ${GUI_BASE_DIR}/JuceLibraryCode ${GUI_BASE_DIR}/JuceLibraryCode/modules ${GUI_BASE_DIR}/Plugins/Headers ${GUI_COMMONLIB_DIR}/include ${CMAKE_CURRENT_BINARY_DIR})
+
+set_target_properties(${PLUGIN_NAME} PROPERTIES VERSION ${PLUGIN_VERSION})
+if (LINUX)
+	set_target_properties(${PLUGIN_NAME} PROPERTIES SOVERSION ${PLUGIN_VERSION_MAJOR})
+elseif (APPLE)
+	set_target_properties(${PLUGIN_NAME} PROPERTIES
+		MACOSX_BUNDLE_BUNDLE_VERSION ${PLUGIN_VERSION}
+		MACOSX_BUNDLE_SHORT_VERSION_STRING ${PLUGIN_VERSION})
+endif()
 
 set(GUI_BIN_DIR ${GUI_BASE_DIR}/Build/${CONFIGURATION_FOLDER})
 

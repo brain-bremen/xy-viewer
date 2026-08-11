@@ -1,0 +1,12 @@
+#pragma once
+
+// Auto-generated from Source/PluginVersion.h.in by CMake.
+// Do not edit directly - change the version in the top-level CMakeLists.txt.
+
+#define PLUGIN_VERSION_MAJOR @PLUGIN_VERSION_MAJOR@
+#define PLUGIN_VERSION_MINOR @PLUGIN_VERSION_MINOR@
+#define PLUGIN_VERSION_PATCH @PLUGIN_VERSION_PATCH@
+#define PLUGIN_VERSION_STRING "@PLUGIN_VERSION@"
+
+#define PLUGIN_VERSION_INT \
+    ((PLUGIN_VERSION_MAJOR << 16) | (PLUGIN_VERSION_MINOR << 8) | PLUGIN_VERSION_PATCH)
