@@ -139,7 +139,7 @@ void XYViewer::setActiveXChannel (uint16 streamId,  const String& name)
             m_xName = name;
             if (m_canvas)
             {
-                m_canvas->setPlotTitle (channel.name);
+                m_canvas->setChannelNames (m_xName, m_yName);
             }
             return;
         }
@@ -154,10 +154,10 @@ void XYViewer::setActiveYChannel (uint16 streamId,  const String& name)
         if (channel.name.equalsIgnoreCase (name) && channel.streamID == streamId)
         {
             m_yChannelIndex = index;
-            m_xName = name;
+            m_yName = name;
             if (m_canvas)
             {
-                m_canvas->setPlotTitle (channel.name);
+                m_canvas->setChannelNames (m_xName, m_yName);
             }
             return;
         }

@@ -25,29 +25,23 @@
 #include "XYViewerCanvas.h"
 #include "XYViewer.h"
 
-#include <random>
 using namespace XYViewerPlugin;
 
 XyLineFading::XyLineFading (std::vector<float>&& x, std::vector<float>&& y)
-    : ::XYLine (std::move (x), std::move (y)), X (std::move (x)), Y (std::move (y))
+    : ::XYLine (std::move (x), std::move (y))
 {
 }
-//XyLineFading::XyLineFading (std::vector<float> x, std::vector<float> y)
-//: ::XYLine (x, y)
-//{
-//XYLine::setColour (c);
-//XYLine::setWidth (maxWidth);
-//XYLine::setOpacity (maxOpacity);
-//XYLine::setType (PlotType::LINE);
-//}
+
 void XyLineFading::draw (Graphics& g, XYRange& range_, int plotWidth, int plotHeight)
 {
     if (type != PlotType::LINE)
         return;
-    //XYLine::draw (g, range, plotWidth, plotHeight);
 
-    float yrange = range.ymax - range.ymin;
-    float xrange = range.xmax - range.xmin;
+    // Use the view range passed in by DrawComponent (reflects current pan/zoom),
+    // not the inherited `range` member (which XYLine's constructor sets to this
+    // line's own data bounds) - otherwise pan/zoom has no visible effect.
+    float yrange = range_.ymax - range_.ymin;
+    float xrange = range_.xmax - range_.xmin;
 
     float startOpacity = 0.2f;
     float endOpacity = opacity;
@@ -63,8 +57,8 @@ void XyLineFading::draw (Graphics& g, XYRange& range_, int plotWidth, int plotHe
 
         float segOpacity = startOpacity + t * (endOpacity - startOpacity);
         float segWidth = startWidth + t * (endWidth - startWidth);
-        float x_start = (x[i - 1] - range.xmin) / xrange;
-        float x_end = (x[i] - range.xmin) / xrange;
+        float x_start = (x[i - 1] - range_.xmin) / xrange;
+        float x_end = (x[i] - range_.xmin) / xrange;
 
         g.setColour (colour.withAlpha (segOpacity));
         if ((x_start < 0 && x_end < 0) || (x_start > 1 && x_end > 1))
@@ -73,8 +67,8 @@ void XyLineFading::draw (Graphics& g, XYRange& range_, int plotWidth, int plotHe
         if (i >= y.size())
             continue;
 
-        float y_start = (y[i - 1] - range.ymin) / yrange;
-        float y_end = (y[i] - range.ymin) / yrange;
+        float y_start = (y[i - 1] - range_.ymin) / yrange;
+        float y_end = (y[i] - range_.ymin) / yrange;
 
         if ((y_start < 0 && y_end < 0) || (y_start > 1 && y_end > 1))
             continue;
@@ -125,9 +119,7 @@ XYViewerCanvas::XYViewerCanvas (XYViewer* processor_)
     m_plt.setInteractive (InteractivePlotMode::ON);
     m_plt.setBackgroundColour (Colours::darkolivegreen);
     addAndMakeVisible (&m_plt);
-    // m_plt.setBounds(1, 1, 640, 480);
-    //m_plt.setBounds(50, 40, 120, 20);
-    m_plt.setBounds (50, 50, 800, 500);
+    // Real bounds are assigned by resized() once the canvas is sized by its parent.
     m_range = XYRange { -5.0f, 5.0, -5.0f, 5.0f };
     m_plt.showGrid (true);
     m_plt.setRange (m_range);
@@ -135,45 +127,50 @@ XYViewerCanvas::XYViewerCanvas (XYViewer* processor_)
 
 XYViewerCanvas::~XYViewerCanvas() {}
 
-void XYViewerCanvas::resized() {}
+void XYViewerCanvas::resized()
+{
+    m_plt.setBounds (getLocalBounds().reduced (10));
+}
 
 void XYViewerCanvas::refreshState() {}
 
-// void XYViewerCanvas::update()
-//{
-
-//}
+void XYViewerCanvas::setChannelNames (const String& xName, const String& yName)
+{
+    m_plt.xlabel (xName);
+    m_plt.ylabel (yName);
+    m_plt.title (yName + " vs " + xName);
+    m_needsAutoRange = true;
+}
 
 void XYViewerCanvas::refresh()
 {
     std::vector<float> x;
     std::vector<float> y;
 
-    //// WIP: Draw random points for now
-    //int nPoints = 100; // or use a member variable if defined elsewhere
-    //std::random_device rd;
-    //std::mt19937 gen (rd());
-    //std::uniform_real_distribution<float> dist (0.0f, 1.0f);
-
-    //for (int i = 0; i < nPoints; ++i)
-    //{
-    //    x.push_back (dist (gen) + i);
-    //    y.push_back (dist (gen) + i);
-    //}
-    auto retentionPeriodMs = m_processor->getParameter (XYViewerPlugin::ParameterNames::keep_window_length)->getValue();
     m_processor->getXYData (x, y, m_retention_period_ms);
 
     m_plt.clear();
-    XyLineFading* line = new XyLineFading (std::move(x), std::move(y));
+    XyLineFading* line = new XyLineFading (std::move (x), std::move (y));
 
     line->setColour (Colours::black);
     line->setWidth (2.0f);
     line->setOpacity (1.0f);
     line->setType (PlotType::LINE);
-    //line->setColour (c)
-    //m_plt.plot (x, y, Colours::black, 2.0, 0.8f, PlotType::LINE);
 
     m_plt.plot (line);
+
+    // Fit the view to the data once, the first time real data arrives (or right
+    // after the selected channels change) - after that, panning/zooming is left
+    // entirely up to the user. The "Rescale" button lets them re-fit at any time.
+    if (m_needsAutoRange && line->x.size() > 1)
+    {
+        XYRange bounds = line->getBounds();
+        if ((bounds.xmax - bounds.xmin) > 1e-6f && (bounds.ymax - bounds.ymin) > 1e-6f)
+        {
+            m_plt.setRange (bounds);
+            m_needsAutoRange = false;
+        }
+    }
 }
 
 void XYViewerCanvas::paint (Graphics& g)

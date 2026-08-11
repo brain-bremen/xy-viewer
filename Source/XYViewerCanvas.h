@@ -34,11 +34,8 @@ class XYViewer;
 class XyLineFading : public ::XYLine
 {
 public:
-    //XyLineFading (std::vector<float> x, std::vector<float> y, Colour c, float maxWidth, float maxOpacity);
     XyLineFading (std::vector<float>&& x, std::vector<float>&& y);
     void draw (Graphics& g, XYRange& range, int width, int height) override;
-    std::vector<float> X;
-    std::vector<float> Y;
 };
 
 class XYFadingTracePlot : public ::InteractivePlot
@@ -70,7 +67,10 @@ public:
     void paint (Graphics& g) override;
 
     void setRetentionPeriodMs (int retentionPeriod) { m_retention_period_ms = retentionPeriod; }
-    void setPlotTitle (const String& title) { m_plt.setTitle (title); }
+
+    /** Updates the plot title and axis labels to reflect the selected channels,
+        and triggers one auto-rescale to fit the newly selected channels' data. */
+    void setChannelNames (const String& xName, const String& yName);
 
 private:
     /** Pointer to the processor class */
@@ -81,6 +81,10 @@ private:
     /** Class for plotting data */
     XYFadingTracePlot m_plt;
     XYRange m_range;
+
+    /** Set once when the first real data arrives (or channel selection changes),
+        so the initial view fits the data instead of the arbitrary default range. */
+    bool m_needsAutoRange = true;
 
     /** Generates an assertion if this class leaks */
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (XYViewerCanvas);

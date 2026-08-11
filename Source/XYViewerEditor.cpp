@@ -97,9 +97,10 @@ void XYViewerEditor::selectedStreamHasChanged()
     int id = 0;
     for (const auto& channel : currentChannels)
     {
-        xChannelList->addItem (channel, ++id);
-        yChannelList->addItem (channel, ++id);
+        ++id;
+        xChannelList->addItem (channel, id);
+        yChannelList->addItem (channel, id);
     }
     xChannelList->setSelectedId (1, sendNotification);
-    yChannelList->setSelectedId (2, sendNotification);
+    yChannelList->setSelectedId (currentChannels.size() > 1 ? 2 : 1, sendNotification);
 }
