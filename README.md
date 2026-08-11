@@ -25,6 +25,23 @@ signal chain is loaded.
 
 ![XY Viewer canvas](Resources/canvas.png)
 
+## Installation
+
+Prebuilt DLLs/shared libraries for each release are available on the
+[Releases page](https://github.com/brain-bremen/xy-viewer/releases).
+
+1. Download the archive for your platform (`xy-viewer-windows-*.zip` or
+   `xy-viewer-linux-*.tar.gz`) and extract the plugin file (`xy-viewer.dll` /
+   `xy-viewer.so`).
+2. Copy it into one of the Open Ephys GUI's plugin directories:
+   - The `plugins` folder next to the GUI executable (`open-ephys.exe` on
+     Windows), e.g. `C:\Program Files\Open Ephys\plugins\`.
+   - Or, per-user (no install permissions needed):
+     - Windows: `%LOCALAPPDATA%\Open Ephys\plugins-api10\`
+     - Linux: `~/.config/open-ephys/plugins-api10/`
+3. (Re)start the Open Ephys GUI — **XY Viewer** should now appear under
+   **Sinks** in the processor list.
+
 ## Parameters
 
 | Name | Scope | Default | Notes |
