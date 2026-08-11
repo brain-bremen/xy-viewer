@@ -72,6 +72,10 @@ public:
         and triggers one auto-rescale to fit the newly selected channels' data. */
     void setChannelNames (const String& xName, const String& yName);
 
+    /** Persists the current pan/zoom range so it survives a restart */
+    void saveCustomParametersToXml (XmlElement* xml) override;
+    void loadCustomParametersFromXml (XmlElement* xml) override;
+
 private:
     /** Pointer to the processor class */
     XYViewer* m_processor;

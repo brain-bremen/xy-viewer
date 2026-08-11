@@ -49,13 +49,62 @@ void XYViewer::updateSettings()
     m_channels.clear();
     for (ContinuousChannel* contChan : continuousChannels)
     {
-        m_channels.emplace_back (contChan->getName(), contChan->getStreamId(), contChan->getSampleRate());
+        String streamName;
+        if (DataStream* stream = getDataStream (contChan->getStreamId()))
+            streamName = stream->getName();
+        m_channels.push_back ({ contChan->getName(), streamName, contChan->getStreamId(), contChan->getSampleRate() });
     }
+
+    resolveActiveChannels();
 
     if (m_canvas)
     {
         parameterValueChanged (getParameter (ParameterNames::keep_window_length));
     }
+}
+
+void XYViewer::resolveActiveChannels()
+{
+    auto findChannelIndex = [this] (const String& name, const String& streamName) -> int
+    {
+        int index = 0;
+        for (const auto& channel : m_channels)
+        {
+            if (channel.name.equalsIgnoreCase (name) && (streamName.isEmpty() || channel.streamName.equalsIgnoreCase (streamName)))
+                return index;
+            index++;
+        }
+        return -1;
+    };
+
+    if (m_xName.isNotEmpty())
+    {
+        int index = findChannelIndex (m_xName, m_xStreamName);
+        if (index >= 0)
+            m_xChannelIndex = index;
+    }
+    else if (! m_channels.empty())
+    {
+        m_xChannelIndex = 0;
+        m_xName = m_channels[0].name;
+        m_xStreamName = m_channels[0].streamName;
+    }
+
+    if (m_yName.isNotEmpty())
+    {
+        int index = findChannelIndex (m_yName, m_yStreamName);
+        if (index >= 0)
+            m_yChannelIndex = index;
+    }
+    else if (m_channels.size() > 1)
+    {
+        m_yChannelIndex = 1;
+        m_yName = m_channels[1].name;
+        m_yStreamName = m_channels[1].streamName;
+    }
+
+    if (m_canvas)
+        m_canvas->setChannelNames (m_xName, m_yName);
 }
 
 void XYViewer::process (AudioBuffer<float>& buffer)
@@ -99,9 +148,26 @@ bool XYViewer::stopAcquisition()
 
 void XYViewer::handleTTLEvent (TTLEventPtr event) {}
 
-void XYViewer::saveCustomParametersToXml (XmlElement* parentElement) {}
+void XYViewer::saveCustomParametersToXml (XmlElement* parentElement)
+{
+    XmlElement* xySelection = parentElement->createNewChildElement ("XY_SELECTION");
+    xySelection->setAttribute ("x_channel", m_xName);
+    xySelection->setAttribute ("x_stream", m_xStreamName);
+    xySelection->setAttribute ("y_channel", m_yName);
+    xySelection->setAttribute ("y_stream", m_yStreamName);
+}
 
-void XYViewer::loadCustomParametersFromXml (XmlElement* parentElement) {}
+void XYViewer::loadCustomParametersFromXml (XmlElement* parentElement)
+{
+    if (XmlElement* xySelection = parentElement->getChildByName ("XY_SELECTION"))
+    {
+        m_xName = xySelection->getStringAttribute ("x_channel");
+        m_xStreamName = xySelection->getStringAttribute ("x_stream");
+        m_yName = xySelection->getStringAttribute ("y_channel");
+        m_yStreamName = xySelection->getStringAttribute ("y_stream");
+        resolveActiveChannels();
+    }
+}
 
 Array<String> XYViewer::getChannelsForStream (uint16 streamdId) const
 {
@@ -137,6 +203,7 @@ void XYViewer::setActiveXChannel (uint16 streamId,  const String& name)
         {
             m_xChannelIndex = index;
             m_xName = name;
+            m_xStreamName = channel.streamName;
             if (m_canvas)
             {
                 m_canvas->setChannelNames (m_xName, m_yName);
@@ -155,6 +222,7 @@ void XYViewer::setActiveYChannel (uint16 streamId,  const String& name)
         {
             m_yChannelIndex = index;
             m_yName = name;
+            m_yStreamName = channel.streamName;
             if (m_canvas)
             {
                 m_canvas->setChannelNames (m_xName, m_yName);

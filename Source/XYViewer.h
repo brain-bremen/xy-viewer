@@ -82,6 +82,10 @@ public:
     void setActiveXChannel (uint16 streamId,  const String& name);
     void setActiveYChannel (uint16 streamId,  const String& name);
 
+    /** Name of the currently selected X/Y channel (persists across restarts) */
+    String getActiveXChannelName() const noexcept { return m_xName; }
+    String getActiveYChannelName() const noexcept { return m_yName; }
+
     void setCanvas (XYViewerCanvas* canvas) noexcept { m_canvas = canvas; }
 
 private:
@@ -93,6 +97,7 @@ private:
     struct ContinuousChannelInfo
     {
         String name;
+        String streamName;
         uint16 streamID = 0;
         float sampleRate = 0.0f;
         //bool isActive = false;
@@ -105,6 +110,15 @@ private:
     int m_yChannelIndex = 1; // Index of selected Y channel in m_channels
     String m_xName;
     String m_yName;
+    String m_xStreamName;
+    String m_yStreamName;
+
+    /** Re-resolves m_xChannelIndex/m_yChannelIndex from m_xName/m_yName (and their
+        stream names) against the freshly rebuilt m_channels list. Used both to
+        recover a channel selection restored from XML and to keep the selection
+        valid whenever the upstream signal chain changes. Falls back to the first
+        two channels if no name has been chosen yet. */
+    void resolveActiveChannels();
 
 public:
     // Get the latest X and Y data for plotting (thread-safe copy)

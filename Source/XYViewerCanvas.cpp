@@ -142,6 +142,36 @@ void XYViewerCanvas::setChannelNames (const String& xName, const String& yName)
     m_needsAutoRange = true;
 }
 
+void XYViewerCanvas::saveCustomParametersToXml (XmlElement* xml)
+{
+    XYRange range;
+    m_plt.getRange (range);
+
+    XmlElement* rangeXml = xml->createNewChildElement ("AXIS_RANGE");
+    rangeXml->setAttribute ("xmin", range.xmin);
+    rangeXml->setAttribute ("xmax", range.xmax);
+    rangeXml->setAttribute ("ymin", range.ymin);
+    rangeXml->setAttribute ("ymax", range.ymax);
+}
+
+void XYViewerCanvas::loadCustomParametersFromXml (XmlElement* xml)
+{
+    if (XmlElement* rangeXml = xml->getChildByName ("AXIS_RANGE"))
+    {
+        XYRange range;
+        range.xmin = (float) rangeXml->getDoubleAttribute ("xmin");
+        range.xmax = (float) rangeXml->getDoubleAttribute ("xmax");
+        range.ymin = (float) rangeXml->getDoubleAttribute ("ymin");
+        range.ymax = (float) rangeXml->getDoubleAttribute ("ymax");
+
+        if ((range.xmax - range.xmin) > 1e-6f && (range.ymax - range.ymin) > 1e-6f)
+        {
+            m_plt.setRange (range);
+            m_needsAutoRange = false;
+        }
+    }
+}
+
 void XYViewerCanvas::refresh()
 {
     std::vector<float> x;

@@ -94,13 +94,31 @@ void XYViewerEditor::selectedStreamHasChanged()
     yChannelList->clear();
 
     Array<String> currentChannels = xyViewerNode->getChannelsForStream (selectedStream);
+    const String desiredX = xyViewerNode->getActiveXChannelName();
+    const String desiredY = xyViewerNode->getActiveYChannelName();
+
     int id = 0;
+    int xIdToSelect = 0;
+    int yIdToSelect = 0;
     for (const auto& channel : currentChannels)
     {
         ++id;
         xChannelList->addItem (channel, id);
         yChannelList->addItem (channel, id);
+
+        if (channel.equalsIgnoreCase (desiredX))
+            xIdToSelect = id;
+        if (channel.equalsIgnoreCase (desiredY))
+            yIdToSelect = id;
     }
-    xChannelList->setSelectedId (1, sendNotification);
-    yChannelList->setSelectedId (currentChannels.size() > 1 ? 2 : 1, sendNotification);
+
+    // Fall back to the first/second channel if the persisted selection isn't
+    // present on this stream (e.g. first time this stream has been selected).
+    if (xIdToSelect == 0 && currentChannels.size() > 0)
+        xIdToSelect = 1;
+    if (yIdToSelect == 0)
+        yIdToSelect = currentChannels.size() > 1 ? 2 : (currentChannels.size() > 0 ? 1 : 0);
+
+    xChannelList->setSelectedId (xIdToSelect, sendNotification);
+    yChannelList->setSelectedId (yIdToSelect, sendNotification);
 }
