@@ -43,6 +43,8 @@ public:
 private:
     std::unique_ptr<ComboBox> xChannelList = nullptr;
     std::unique_ptr<ComboBox> yChannelList = nullptr;
+    std::unique_ptr<Label> xChannelLabel = nullptr;
+    std::unique_ptr<Label> yChannelLabel = nullptr;
 
     /** Generates an assertion if this class leaks */
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (XYViewerEditor);

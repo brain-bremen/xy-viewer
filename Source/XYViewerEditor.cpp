@@ -30,17 +30,36 @@ using namespace XYViewerPlugin;
 XYViewerEditor::XYViewerEditor (GenericProcessor* p)
     : VisualizerEditor (p, "XY Viewer", 210)
 {
+    // Matches the geometry addTextBoxParameterEditor's TextBoxParameterEditor uses
+    // below (default rowWidthPixels=170: a rowWidthPixels/2-wide control, then its
+    // label starting at rowWidthPixels/2+4), so all three rows share the same
+    // control and label column, and the whole block is centred in the editor.
+    constexpr int rowX = 18;
+    constexpr int controlWidth = 85;
+    constexpr int labelX = rowX + controlWidth + 4;
+    constexpr int labelWidth = 85;
+
     xChannelList = std::make_unique<ComboBox> ("X Channel List");
     xChannelList->addListener (this);
-    xChannelList->setBounds (10, 40, 120, 20);
+    xChannelList->setBounds (rowX, 40, controlWidth, 20);
     addAndMakeVisible (xChannelList.get());
+
+    xChannelLabel = std::make_unique<Label> ("X Channel Label", "X");
+    xChannelLabel->setBounds (labelX, 40, labelWidth, 20);
+    xChannelLabel->setJustificationType (Justification::centredLeft);
+    addAndMakeVisible (xChannelLabel.get());
 
     yChannelList = std::make_unique<ComboBox> ("Y Channel List");
     yChannelList->addListener (this);
-    yChannelList->setBounds (10, 70, 120, 20);
+    yChannelList->setBounds (rowX, 70, controlWidth, 20);
     addAndMakeVisible (yChannelList.get());
 
-    addTextBoxParameterEditor (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, 10, 95);
+    yChannelLabel = std::make_unique<Label> ("Y Channel Label", "Y");
+    yChannelLabel->setBounds (labelX, 70, labelWidth, 20);
+    yChannelLabel->setJustificationType (Justification::centredLeft);
+    addAndMakeVisible (yChannelLabel.get());
+
+    addTextBoxParameterEditor (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, rowX, 95);
 }
 
 Visualizer* XYViewerEditor::createNewCanvas()
