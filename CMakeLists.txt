@@ -69,15 +69,6 @@ endif()
 target_compile_features(${PLUGIN_NAME} PUBLIC cxx_auto_type cxx_generalized_initializers cxx_std_20)
 target_include_directories(${PLUGIN_NAME} PUBLIC ${GUI_BASE_DIR}/JuceLibraryCode ${GUI_BASE_DIR}/JuceLibraryCode/modules ${GUI_BASE_DIR}/Plugins/Headers ${GUI_COMMONLIB_DIR}/include ${CMAKE_CURRENT_BINARY_DIR})
 
-set_target_properties(${PLUGIN_NAME} PROPERTIES VERSION ${PLUGIN_VERSION})
-if (LINUX)
-	set_target_properties(${PLUGIN_NAME} PROPERTIES SOVERSION ${PLUGIN_VERSION_MAJOR})
-elseif (APPLE)
-	set_target_properties(${PLUGIN_NAME} PROPERTIES
-		MACOSX_BUNDLE_BUNDLE_VERSION ${PLUGIN_VERSION}
-		MACOSX_BUNDLE_SHORT_VERSION_STRING ${PLUGIN_VERSION})
-endif()
-
 set(GUI_BIN_DIR ${GUI_BASE_DIR}/Build/${CONFIGURATION_FOLDER})
 
 if (NOT CMAKE_LIBRARY_ARCHITECTURE)
@@ -105,7 +96,10 @@ elseif(LINUX)
 	
 	install(TARGETS ${PLUGIN_NAME} LIBRARY DESTINATION ${GUI_BIN_DIR}/plugins)
 elseif(APPLE)
-	set_target_properties(${PLUGIN_NAME} PROPERTIES BUNDLE TRUE)
+	set_target_properties(${PLUGIN_NAME} PROPERTIES
+		BUNDLE TRUE
+		MACOSX_BUNDLE_BUNDLE_VERSION ${PLUGIN_VERSION}
+		MACOSX_BUNDLE_SHORT_VERSION_STRING ${PLUGIN_VERSION})
 	set_property(TARGET ${PLUGIN_NAME} APPEND_STRING PROPERTY LINK_FLAGS
 	"-undefined dynamic_lookup -rpath @loader_path/../../../../shared")
 
