@@ -38,28 +38,30 @@ XYViewerEditor::XYViewerEditor (GenericProcessor* p)
     constexpr int controlWidth = 85;
     constexpr int labelX = rowX + controlWidth + 4;
     constexpr int labelWidth = 85;
+    constexpr int firstRowY = 40;
+    constexpr int rowSpacing = 30;
 
     xChannelList = std::make_unique<ComboBox> ("X Channel List");
     xChannelList->addListener (this);
-    xChannelList->setBounds (rowX, 40, controlWidth, 20);
+    xChannelList->setBounds (rowX, firstRowY, controlWidth, 20);
     addAndMakeVisible (xChannelList.get());
 
     xChannelLabel = std::make_unique<Label> ("X Channel Label", "X");
-    xChannelLabel->setBounds (labelX, 40, labelWidth, 20);
+    xChannelLabel->setBounds (labelX, firstRowY, labelWidth, 20);
     xChannelLabel->setJustificationType (Justification::centredLeft);
     addAndMakeVisible (xChannelLabel.get());
 
     yChannelList = std::make_unique<ComboBox> ("Y Channel List");
     yChannelList->addListener (this);
-    yChannelList->setBounds (rowX, 70, controlWidth, 20);
+    yChannelList->setBounds (rowX, firstRowY + rowSpacing, controlWidth, 20);
     addAndMakeVisible (yChannelList.get());
 
     yChannelLabel = std::make_unique<Label> ("Y Channel Label", "Y");
-    yChannelLabel->setBounds (labelX, 70, labelWidth, 20);
+    yChannelLabel->setBounds (labelX, firstRowY + rowSpacing, labelWidth, 20);
     yChannelLabel->setJustificationType (Justification::centredLeft);
     addAndMakeVisible (yChannelLabel.get());
 
-    addTextBoxParameterEditor (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, rowX, 95);
+    addTextBoxParameterEditor (Parameter::PROCESSOR_SCOPE, ParameterNames::keep_window_length, rowX, firstRowY + 2 * rowSpacing);
 }
 
 Visualizer* XYViewerEditor::createNewCanvas()
