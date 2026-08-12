@@ -7,8 +7,7 @@ if (NOT DEFINED GUI_BASE_DIR)
 	endif()
 endif()
 
-get_filename_component(PROJECT_FOLDER ${CMAKE_CURRENT_SOURCE_DIR} ABSOLUTE)
-get_filename_component(PLUGIN_NAME ${PROJECT_FOLDER} NAME)
+set(PLUGIN_NAME "xy-viewer")
 
 # Plugin version. Single source of truth: PluginVersion.h is generated from
 # this, getLibInfo() reports it, and the Windows resource stamps the DLL with it.
