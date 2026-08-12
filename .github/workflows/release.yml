@@ -178,7 +178,7 @@ jobs:
         with:
           name: plugins-linux
           path: |
-            plugin/Build/xy-viewer.so
+            plugin/Build/plugin.so
           if-no-files-found: error
 
   create-release:
